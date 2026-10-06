@@ -1,0 +1,78 @@
+{
+  "version": 1,
+  "updated_at": null,
+  "candidate": "FILL: Full Name, City",
+  "plain_summary": "FILL during onboarding: two or three plain sentences that say what a great job looks like for this person. Every score is judged against this.",
+  "dimensions": {
+    "interests": {
+      "description": "Does the day-to-day work match what the candidate enjoys and is good at?",
+      "high_signals": ["FILL: kinds of work that energize the candidate"],
+      "low_signals": ["FILL: kinds of work the candidate wants to avoid"],
+      "scoring_guide": "5 = the work is mostly what the candidate loves doing. 4 = mostly a good match with one minor drawback. 3 = a genuine mix. 2 = mostly work the candidate does not want. 1 = the wrong job entirely."
+    },
+    "goals": {
+      "description": "Does the role move the candidate toward the career goal (title, level, company type and size)?",
+      "high_signals": ["FILL: titles, levels, company stages or sizes that fit the goal"],
+      "low_signals": ["FILL: titles, levels or company types that move the wrong way"],
+      "scoring_guide": "5 = exactly the next step the candidate wants. 4 = a clear step forward with a small compromise. 3 = sideways. 2 = a step back or the wrong kind of company. 1 = nowhere near the goal."
+    },
+    "location": {
+      "description": "Can the candidate actually get there, as often as the job asks?",
+      "scoring_guide": "5 = fully remote, or in the home area with a light office schedule. 4 = home area with a heavier schedule, or a nearby city with 1 to 2 office days a week. 3 = fully on-site in the home area, or a nearby city with 3 days. 2 = a nearby city with 4 or more days. 1 = would require moving.",
+      "max_office_days_home_area": 3,
+      "max_office_days_nearby_city": 2,
+      "willing_to_relocate": false,
+      "remote_must_be_in_country": true
+    },
+    "comp": {
+      "description": "Does the posted pay meet the candidate's numbers? Pay is in the candidate's currency (see profile/candidate.json).",
+      "floor": 0,
+      "bonus": 0,
+      "scoring_guide": "5 = the posted range reaches the 'bonus' number or more. 4 = it reaches the floor but not the bonus. 3 = no pay posted (never a penalty). 2 = slightly under the floor. 1 = far under the floor.",
+      "unlisted_policy": "No pay posted scores 3 and sets comp_unknown. Missing pay is never held against a job."
+    },
+    "overall": {
+      "label": "Dream fit",
+      "description": "The headline score, 1 to 5. Start from the weighted average of the four scores above using `weights`, then adjust by at most one point for things the four do not capture (a company the candidate has said they love, a stale posting, a red flag in the description). Be decisive: 3 means a true toss-up, not 'unsure'. A hard problem (an off-limits industry, a requirement the candidate clearly cannot meet) caps it at 2.",
+      "weights": {
+        "interests": 0.3,
+        "goals": 0.3,
+        "location": 0.2,
+        "comp": 0.2
+      }
+    }
+  },
+  "search_scope": {
+    "titles": ["FILL: job titles to search for"],
+    "geography": "FILL: plain description, e.g. 'Remote in Canada, or hybrid in the Toronto area'",
+    "posting_age_max_days": 7,
+    "sources_note": "The sources that are switched on live in profile/candidate.json under sources."
+  },
+  "hard_exclusions": {
+    "industries": [],
+    "functions": [],
+    "employment_type": "Skip part-time, internships, co-op, gig or freelance marketplaces, and contracts shorter than 12 months. Full-time contracts of 12 months or more are scored normally.",
+    "on_site": "Fully on-site jobs outside the home area are skipped at intake (reason 'on-site'). Hybrid is never treated as on-site.",
+    "pay_floor": "Skip a job whose posted pay tops out below dimensions.comp.floor (reason 'pay-floor'). Missing pay is NOT a reason to skip. Ignored while floor is 0.",
+    "title_level": [],
+    "language_requirement": [],
+    "other_rules": []
+  },
+  "research_gaps_rule": "Before scoring, fill in missing facts that change the score (pay, office days, company size and stage, company website): check the company site, its careers page and the same posting on other job boards. Always read the description itself for a pay range before calling pay unknown. Only leave a fact unknown after actually looking, and say so in the rationale.",
+  "learning_log": [],
+  "auto_apply": {
+    "enabled": false,
+    "min_overall": 4,
+    "note": "When enabled, each search puts jobs scoring min_overall or higher on the apply queue. Nothing is ever submitted until the candidate presses 'Apply queue now' on the dashboard."
+  },
+  "worth_applying": {
+    "label": "Worth applying",
+    "description": "A second score, 1 to 5, computed by scripts/score_worth_applying.py: how likely an application is to get a reply, based on years asked versus years the candidate has, required credentials, company size, match %, location and pay. It learns from real replies once there are enough of them.",
+    "weights": {},
+    "weights_note": "Empty means the defaults in scripts/score_worth_applying.py. Put a factor here to override it.",
+    "thresholds": {},
+    "learn_min_positives": 8,
+    "learn_min_factor_n": 20,
+    "calibration": {}
+  }
+}

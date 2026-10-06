@@ -1,0 +1,36 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(bash scripts/:*)",
+      "Bash(.venv/bin/python:*)",
+      "Bash(python3 scripts/:*)",
+      "Bash(python3 generate_resume.py:*)",
+      "Bash(open http://localhost:*)",
+      "Bash(open Applications/:*)",
+      "Bash(open Resume/:*)",
+      "Bash(launchctl kickstart:*)",
+      "Bash(launchctl print:*)",
+      "Bash(curl -s http://localhost:*)",
+      "Bash(curl -fsS http://127.0.0.1:*)",
+      "Bash(textutil:*)",
+      "Bash(osascript -e 'display notification:*)",
+      "Bash(git status:*)",
+      "Bash(git log:*)",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(tail:*)",
+      "Read",
+      "Edit(profile/**)",
+      "Edit(dashboard/data/**)",
+      "Edit(tailor/**)",
+      "Edit(docs/**)",
+      "Write(profile/**)",
+      "Write(dashboard/data/**)",
+      "Write(tailor/**)",
+      "Write(docs/**)",
+      "Write(Applications/**)",
+      "WebFetch",
+      "WebSearch"
+    ]
+  }
+}

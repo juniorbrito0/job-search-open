@@ -1,0 +1,47 @@
+# Secrets and local credentials (never commit)
+.env
+.env.*
+*.local
+*.pem
+*.key
+*.p8
+id_rsa*
+.secrets/
+.claude/settings.local.json
+CLAUDE.local.md
+dashboard/data/.apply-file.json
+dashboard/data/.lock
+
+# Local Python and caches
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+
+# Browser traces and Office lock files
+.playwright-mcp/
+~$*
+
+# Runtime logs (full session transcripts) and run stamps
+logs/
+.scan-tmp/
+dashboard/data/.last-scan
+dashboard/data/.last-scan-at
+dashboard/data/.last-apply-at
+dashboard/data/.last-inbox-at
+*.bak
+*.bak-*
+
+# The candidate's own data. Kept out of the shared template on purpose: it only
+# goes to GitHub if the candidate turns on backup to their OWN private repo,
+# which removes these lines (see docs/ONBOARDING.md step 6d).
+profile/candidate.json
+profile/resume.json
+profile/onboarding-progress.json
+dashboard/data/*.json
+dashboard/data/insights.md
+docs/WORKLOG.md
+docs/comms-digest.md
+tailor/*.json
+Applications/
+Resume/

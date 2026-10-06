@@ -1,0 +1,63 @@
+{
+  "version": 1,
+  "note": "Standard answers for job-application forms. Facts (years, certifications, work permit, salary, office days, dates) are never guessed: if one is missing, the apply job stops, marks the role 'needs your input' and asks you. Written answers (why this company, cover letters) are drafted from this file and your resume.",
+  "identity": {
+    "full_name": "",
+    "first_name": "",
+    "last_name": "",
+    "preferred_name": "",
+    "email": "",
+    "phone": "",
+    "location": "",
+    "linkedin": "",
+    "website": "",
+    "calendar_url": "",
+    "street_address": "",
+    "city": "",
+    "province": "",
+    "province_code": "",
+    "country": "",
+    "postal_code": "",
+    "note_address": "Only fill in the street address if you are comfortable with forms receiving it. Leave blank to have the apply job ask you when a form insists."
+  },
+  "work": {
+    "citizenship": "",
+    "authorized_canada": "",
+    "needs_sponsorship_canada": "",
+    "authorized_us": "",
+    "needs_sponsorship_us": "",
+    "notice_period": "",
+    "salary_expectation": "",
+    "salary_range_to_state": "",
+    "willing_to_relocate": "",
+    "office_days_ok": "",
+    "start_date": ""
+  },
+  "education": {
+    "degree": "",
+    "school": "",
+    "years": "",
+    "location": ""
+  },
+  "demographics": {
+    "note": "Voluntary questions (gender, ethnicity, disability, veteran status and so on). You decide. The default is to decline to answer every one of them. Change any answer below only if you want it disclosed.",
+    "gender": "Prefer not to say",
+    "pronouns": "Prefer not to say",
+    "ethnicity": "Prefer not to say",
+    "sexual_orientation": "Prefer not to say",
+    "lgbtq_member": "Prefer not to say",
+    "disability": "Prefer not to say",
+    "veteran_status": "Prefer not to say",
+    "indigenous": "Prefer not to say"
+  },
+  "policies": {
+    "accounts": "If a job site will only take the application after you create an account: use 'Sign in with Google' (or 'Continue with Google') when it is offered. Otherwise do not create an account. Mark the role blocked with a one-line note saying which site needs an account, so you can do that one yourself.",
+    "passwords": "Never type a password into any form, and never store one in this project.",
+    "captcha": "Never solve a 'prove you are human' check. Mark the role blocked instead.",
+    "attestations": "Never tick a box or answer a question in a way that is not true. If unsure, mark the role blocked and ask.",
+    "video_or_live_tests": "If the application requires a recorded video, a live video screen or a timed test you must take yourself, do not apply. Flag it for you instead.",
+    "written_answers": "Short written answers and cover letters are drafted from this file, your resume and research on the company, saved in Applications/<Company>/, and submitted. They never use em dashes.",
+    "screening_questions": "Answer from this file only. If a required fact is missing, stop and ask."
+  },
+  "experience_facts": {}
+}

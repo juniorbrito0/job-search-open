@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Job Search</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css?v=open1">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧭</text></svg>">
+</head>
+<body>
+<script>
+if (new URLSearchParams(location.search).get('embed') === '1') document.body.classList.add('embed')
+</script>
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark">JS</span>
+    <div>
+      <h1>Job Search</h1>
+      <p class="brand-sub"><span id="brand-sub-name"></span> <span class="brand-sep">·</span> <span id="scan-last">Last search: checking…</span></p>
+    </div>
+  </div>
+  <nav class="tabs" id="tabs">
+    <a href="#review" data-view="review">Review <span class="tab-count" id="count-review"></span></a>
+    <a href="#board" data-view="board">Pipeline <span class="tab-count" id="count-board"></span></a>
+    <a href="#startups" data-view="startups">Startups <span class="tab-count" id="count-startups"></span></a>
+    <a href="#archive" data-view="archive">Archive <span class="tab-count" id="count-archive"></span></a>
+    <a href="#ignored" data-view="ignored">Screened out <span class="tab-count" id="count-ignored"></span></a>
+    <a href="#analytics" data-view="analytics">Analytics</a>
+    <a href="#rejected" data-view="rejected">Rejected <span class="tab-count" id="count-rejected"></span></a>
+    <a href="#lost" data-view="lost">Lost <span class="tab-count" id="count-lost"></span></a>
+    <a href="#guide" data-view="guide">Guide</a>
+  </nav>
+  <div class="top-actions">
+    <div class="scan-ctl" id="scan-ctl">
+      <span class="scan-dot" id="scan-dot" hidden></span>
+      <button class="btn small" id="btn-scan" data-runjob="scan" title="Look for new jobs right now, instead of waiting for the next scheduled search">Search now</button>
+    </div>
+    <button class="theme-toggle" id="theme-toggle" title="Toggle theme">◐</button>
+  </div>
+</header>
+
+<main id="view"></main>
+
+<div class="bulkbar" id="bulkbar"></div>
+<div class="toast" id="toast"></div>
+<script src="/app.js?v=open1"></script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+---
+description: Change what counts when jobs are scored
+---
+Help the candidate change their scoring. First summarise the current rules from dashboard/data/scoring-profile.json in plain words (the weights as percentages, their pay numbers, location rules, deal-breakers, and the most common reasons in learning_log). Ask what they want to change, one thing at a time; if they wrote it as an argument ($ARGUMENTS), start there. Make the change, keep weights adding to 100%, record the date and their words in a short note inside the changed rule, and confirm in one sentence. Ask whether to re-score the jobs waiting in Review with the new rules; if yes, re-score them exactly as docs/morning-scan-routine.md section 4 says (do not touch jobs they already moved). If they change the search times or weekly digest, update profile/candidate.json and run `bash scripts/setup-mac.sh --schedule`. Append a dated entry to docs/WORKLOG.md.

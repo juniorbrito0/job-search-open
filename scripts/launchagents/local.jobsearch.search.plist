@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- Template. scripts/setup-mac.sh fills in the __PLACEHOLDERS__ and installs the live copy in ~/Library/LaunchAgents. launchd starts /usr/bin/python3 (never bash) so folder permissions are inherited. -->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>local.jobsearch.search</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/usr/bin/python3</string>
+    <string>__PROJECT_ROOT__/scripts/run-morning-scan.py</string>
+  </array>
+  <key>WorkingDirectory</key>
+  <string>__PROJECT_ROOT__</string>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>HOME</key>
+    <string>__HOME__</string>
+    <key>USER</key>
+    <string>__USER__</string>
+    <key>LOGNAME</key>
+    <string>__USER__</string>
+  </dict>
+  <key>StartCalendarInterval</key>
+  __CALENDAR__
+  <key>RunAtLoad</key>
+  <true/>
+  <key>ProcessType</key>
+  <string>Background</string>
+  <key>StandardOutPath</key>
+  <string>__PROJECT_ROOT__/logs/morning-scan.launchd.log</string>
+  <key>StandardErrorPath</key>
+  <string>__PROJECT_ROOT__/logs/morning-scan.launchd.err.log</string>
+</dict>
+</plist>

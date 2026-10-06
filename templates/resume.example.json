@@ -1,0 +1,47 @@
+{
+  "_note": "SAMPLE ONLY. Alex Sample is a made-up person. The setup interview replaces this whole file with your real resume.",
+  "name": "Alex Sample",
+  "contact": "(555) 010-0000  ·  alex.sample@example.com  ·  Sampletown, ON  ·  linkedin.com/in/alex-sample-example",
+  "headline": "Operations Manager  ·  Program Lead",
+  "target_roles": "Operations  ·  Program Management  ·  Business Operations",
+  "summary": "Operations manager with 6 years running programs, budgets and teams at growing companies. Known for turning messy processes into simple, repeatable systems and for keeping cross-functional projects on time.",
+  "experience": [
+    {
+      "company": "Example Co",
+      "location": "Sampletown, ON",
+      "dates": "Jan 2021 – Present",
+      "roles": [["Operations Manager", "Jan 2023 – Present"], ["Operations Coordinator", "Jan 2021 – Jan 2023"]],
+      "previously": null,
+      "bullets": [
+        "Ran day-to-day operations for a 40-person team, owning budgets, vendors and the weekly operating review",
+        "Cut monthly reporting time from three days to half a day by rebuilding the reporting workflow in Google Sheets and Notion",
+        "Led the move to a new HR system for all staff, from vendor selection through training, on time and under budget",
+        "Onboarded 25 new hires with a redesigned first-week program that raised 90-day retention"
+      ],
+      "skip_one_page": false
+    },
+    {
+      "company": "Demo Retail Ltd",
+      "location": "Sampletown, ON",
+      "dates": "Jun 2018 – Dec 2020",
+      "roles": [["Store Operations Lead", null]],
+      "previously": null,
+      "bullets": [
+        "Managed scheduling, inventory and customer service for a team of 12",
+        "Introduced a simple stock-tracking sheet that reduced stock-outs by a third"
+      ],
+      "skip_one_page": true
+    }
+  ],
+  "education": [
+    {"school": "Sample University", "dates": "2014 – 2018", "detail": "Bachelor of Commerce  ·  Sampletown, ON"}
+  ],
+  "certifications": [],
+  "skills_groups": [
+    ["Operations", "Process Improvement  ·  Budget Management  ·  Vendor Management  ·  Reporting"],
+    ["People", "Onboarding  ·  Scheduling  ·  Training"]
+  ],
+  "tools": "Google Workspace  ·  Excel  ·  Notion  ·  Slack  ·  Asana",
+  "languages": [["English", "Native"]],
+  "accent_color": "0f766e"
+}
