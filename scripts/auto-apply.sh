@@ -147,7 +147,17 @@ fi
 
 progress start --queued "$PENDING" --batch "$BATCH"
 
-PROMPT="Run the apply queue. Read docs/auto-apply-routine.md top to bottom, then execute it exactly as written, working autonomously and without asking questions. Apply to AT MOST $BATCH positions this run, highest overall score first, then stop and report: there are $PENDING on the queue and the rest wait for the next press of Apply queue now. If the queue is empty, stop. Do not search for new jobs. Do not message, connect, post, or change LinkedIn account settings. On success set applied_at and status applied (and auto_applied when auto_apply_queued is true). On failure leave a plain-English apply_result that tells the candidate exactly what to do next, and never claim it was applied. Report progress as you go, exactly as section 7 of the routine describes, because the candidate watches this run on the dashboard. Portals that demand a new account: use Sign in with Google if it is offered; otherwise do not create an account, mark the role blocked with the portal link so the candidate can apply in a few minutes themself. Append a dated note to docs/WORKLOG.md only if you submitted or newly blocked something."
+# Password manager: file anything held during an earlier outage, then report
+# whether new portal accounts can be made this run.
+"$PY_BIN" "$PROJECT/scripts/save_login.py" --flush-pending >>"$LOG" 2>&1 || true
+"$PY_BIN" "$PROJECT/scripts/save_login.py" --check >>"$LOG" 2>&1
+case $? in
+  0) PM_STATE="A password manager is connected and answering: when a portal needs an account, use scripts/save_login.py as the routine says." ;;
+  1) PM_STATE="The password manager is not answering right now, which is fine: scripts/save_login.py still prints a password and holds it safely until it answers. Create accounts as the routine says." ;;
+  *) PM_STATE="No password manager is connected: use Sign in with Google when offered, otherwise mark account-only portals blocked for the candidate." ;;
+esac
+
+PROMPT="Run the apply queue. Read docs/auto-apply-routine.md top to bottom, then execute it exactly as written, working autonomously and without asking questions. Apply to AT MOST $BATCH positions this run, highest overall score first, then stop and report: there are $PENDING on the queue and the rest wait for the next press of Apply queue now. If the queue is empty, stop. Do not search for new jobs. Do not message, connect, post, or change LinkedIn account settings. On success set applied_at and status applied (and auto_applied when auto_apply_queued is true). On failure leave a plain-English apply_result that tells the candidate exactly what to do next, and never claim it was applied. Report progress as you go, exactly as section 7 of the routine describes, because the candidate watches this run on the dashboard. Portals that demand a new account: follow the New accounts rule in the routine. $PM_STATE Never run op or bw yourself and never write a password anywhere. Append a dated note to docs/WORKLOG.md only if you submitted or newly blocked something."
 
 # Not `claude` directly: agent-run.sh owns the watchdog and the timeout, and it
 # never retries a task failure on another provider (re-running a half-finished

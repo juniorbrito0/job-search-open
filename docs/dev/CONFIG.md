@@ -78,7 +78,9 @@ copies any missing ones into place and creates empty `positions.json`,
     "gmail": "claude-connector",
     "granola": false,
     "wispr_flow": false,
-    "github_backup": false
+    "github_backup": false,
+    "password_manager": "none",
+    "password_vault": "Job Portals"
   },
   "notifications": {"email_strong_matches": true, "mac_notifications": true},
   "dashboard": {"port": 7411, "share_on_home_wifi": false}
@@ -163,3 +165,14 @@ dashboard button.
   Rejected/Lost tagging can be set per position without editing code.
 - `dashboard/data/insights.md`: optional; Claude writes it when asked for insights,
   and the Rejected and Lost tabs show it.
+
+## Password manager (portal accounts)
+
+`integrations.password_manager` is `none` (default), `1password`, `bitwarden` or
+`mac-keychain`; `integrations.password_vault` names the 1Password vault or
+Bitwarden folder (default "Job Portals"). Connect with
+`scripts/connect-password-manager.sh <kind>`, which collects secrets in a hidden
+Mac pop-up and stores them in the macOS Keychain (service `job-search`). The apply
+job only ever calls `scripts/save_login.py`. Apple Passwords and Google Password
+Manager have no programmatic write access, so their users use `mac-keychain` and
+import with `save_login.py --export-csv apple|google <file>` (then delete the file).

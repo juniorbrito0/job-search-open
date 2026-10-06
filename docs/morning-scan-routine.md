@@ -214,9 +214,12 @@ For every new position set `apply_process` (see SCHEMA.md):
 - LinkedIn Easy Apply: `method: easy_apply`, `can_auto: true`.
 - Otherwise find the real apply page and its system. Greenhouse, Lever, Ashby,
   Workable and similar simple forms: `can_auto: true` with a one or two sentence
-  summary. Portals that need a new account or show a CAPTCHA (a "prove you are
-  human" box): `can_auto: false`, a `manual_reason`, and short plain steps the
-  candidate can follow themself.
+  summary. Portals that need a new account: `can_auto: true` when a password
+  manager is connected (`candidate.json → integrations.password_manager` is not
+  `none`) or the portal offers Sign in with Google; otherwise `can_auto: false`.
+  A CAPTCHA (a "prove you are human" box): always `can_auto: false`. Every
+  `can_auto: false` gets a `manual_reason` and short plain steps the candidate
+  can follow themself.
 
 Then run `.venv/bin/python scripts/queue_auto_apply.py`. When
 `auto_apply.enabled` is true it puts strong matches (`overall` at or above

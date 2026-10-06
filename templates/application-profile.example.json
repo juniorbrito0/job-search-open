@@ -51,8 +51,8 @@
     "indigenous": "Prefer not to say"
   },
   "policies": {
-    "accounts": "If a job site will only take the application after you create an account: use 'Sign in with Google' (or 'Continue with Google') when it is offered. Otherwise do not create an account. Mark the role blocked with a one-line note saying which site needs an account, so you can do that one yourself.",
-    "passwords": "Never type a password into any form, and never store one in this project.",
+    "accounts": "If a job site will only take the application after you create an account: (1) use 'Sign in with Google' / 'Continue with Google' if offered. (2) Otherwise, if a password manager is connected (profile/candidate.json -> integrations.password_manager is not 'none'), run `python3 scripts/save_login.py --title '<Company> <Portal>' --url '<apply URL>'`; it creates and files a strong password and prints only the password. Create the account with the candidate's email and that password, confirm the email if asked (open the confirmation link from Gmail), and finish the application. (3) If no password manager is connected, mark the role blocked with the portal link so the candidate can do it by hand.",
+    "passwords": "Only passwords produced by scripts/save_login.py may be typed, and only into the sign-up or sign-in form of the portal it was made for. Never write a password into any file, log, note, apply_result or commit, and never type the candidate's own personal passwords anywhere.",
     "captcha": "Never solve a 'prove you are human' check. Mark the role blocked instead.",
     "attestations": "Never tick a box or answer a question in a way that is not true. If unsure, mark the role blocked and ask.",
     "video_or_live_tests": "If the application requires a recorded video, a live video screen or a timed test you must take yourself, do not apply. Flag it for you instead.",

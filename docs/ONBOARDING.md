@@ -194,7 +194,7 @@ Explain from `docs/SCORING.md` in plain words:
 Ask: "Does this balance feel right, or should something count more?" Adjust,
 save `dimensions.overall.weights`, and confirm in one sentence.
 
-## Step 6 of 8: Connect email and LinkedIn (10 minutes)
+## Step 6 of 8: Connect email, LinkedIn and a password manager (10 to 20 minutes)
 
 **a) Gmail** (needed for LinkedIn alert emails and replies from employers).
 Check if a Gmail tool is already available in this session (try a harmless
@@ -228,7 +228,15 @@ Or I can show you how." With a yes, use the job browser to search each of their
 top 3 to 5 titles in their area and remote, and switch on the alert toggle
 (Daily, Email). Do nothing else on LinkedIn.
 
-**d) Optional extras** (offer briefly, default no):
+**d) Password manager (for job sites that make you create an account).**
+Explain briefly why it matters: "Lots of company job sites make you create an
+account before applying. With a password manager connected, I can do those
+myself; without one, those jobs wait for you." Then follow
+`docs/PASSWORD-MANAGER.md` (it covers 1Password, Bitwarden, and Apple or Google
+passwords, and saying "not now"). Do not push: "not now" is a fine answer, and
+they can ask later.
+
+**e) Optional extras** (offer briefly, default no):
 - **Granola** (if they use it for meeting notes): connect at
   https://claude.ai/settings/connectors, set `integrations.granola: true`.
 - **Backup to their own private GitHub**: only if they already have GitHub. Create
@@ -271,5 +279,6 @@ top 3 to 5 titles in their area and remote, and switch on the alert toggle
     "is everything working?", "explain the dashboard again", "prep me for my
     interview at <company>".
   - Shortcut commands: `/tune` (change what counts), `/status` (health check),
-    `/add-job` (paste a link), `/tour` (the explanation again).
+    `/add-job` (paste a link), `/tour` (the explanation again),
+    `/password-manager` (connect it, or export new job-site passwords).
 - Thank them and wish them luck.

@@ -289,6 +289,14 @@ sys.exit(0 if "li_at" in names else 1)' "$cookies" 2>/dev/null; then
   else
     todo "LinkedIn is not signed in inside the job browser yet (run: $SCRIPT_DIR/open-linkedin-login.sh)"
   fi
+  if [[ -x "$VENV/bin/python" && -f "$PROJECT/profile/candidate.json" ]]; then
+    "$VENV/bin/python" "$SCRIPT_DIR/save_login.py" --check >/dev/null 2>&1
+    case $? in
+      0) ok "Password manager connected (job sites that need an account can be done automatically)" ;;
+      1) todo "Password manager is connected but not answering (run: $SCRIPT_DIR/connect-password-manager.sh test)" ;;
+      *) ok "No password manager connected (optional; job sites that need an account are left for you)" ;;
+    esac
+  fi
   [[ -f "$PROJECT/profile/candidate.json" ]] && ok "Profile file exists" || todo "Profile not created yet (the setup interview does this)"
   [[ -f "$PROJECT/profile/resume.json" ]] && ok "Resume data exists" || todo "Resume not loaded yet"
   port="$(dashboard_port)"

@@ -71,6 +71,16 @@ Setup puts two icons on your Desktop:
 The full plain-language guide is in [docs/HOW-IT-WORKS.md](docs/HOW-IT-WORKS.md),
 and the dashboard has a **Guide** tab with the same information.
 
+## Want it more automatic?
+
+Some company job sites make you create an account before you can apply. If you
+connect a **password manager**, the assistant can create those accounts and
+finish the application on its own, saving each new password in your password
+manager. 1Password works best (fully automatic). Bitwarden (free) also works.
+Apple Passwords and Google (Chrome) passwords cannot be written to by any
+program, so with those you import the new passwords in a few clicks now and then.
+Claude offers this during setup, or ask "connect my password manager" any time.
+
 ## Your privacy
 
 Everything stays in the `job-search` folder on your Mac. Your email is read

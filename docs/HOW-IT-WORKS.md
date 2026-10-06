@@ -66,6 +66,28 @@ alone and it closes when done.
   sent until you press it.
 - **◐**: switch between light and dark.
 
+## Job sites that want you to make an account
+
+Many company job sites (Workday, for example) make you create an account before
+you can apply. You choose how that works:
+
+- **Without a password manager** (the starting point): it uses "Sign in with
+  Google" when the site offers it. Otherwise it leaves that job for you, with the
+  link, and says so on the card. It takes about 10 minutes to do yourself.
+- **With a password manager** (more automatic): it creates the account itself
+  with a new strong password, saves the password in your password manager first,
+  confirms the email, and finishes the application. Later you can sign in to that
+  site yourself with the saved password.
+  - **1Password** (recommended, about $3 to $5 a month): fully automatic.
+  - **Bitwarden** (free): fully automatic, but your Bitwarden master password has
+    to be stored in your Mac's Keychain so it can unlock while you are away.
+  - **Apple Passwords or Google (Chrome) passwords**: Apple and Google do not let
+    any program save passwords into them. The job search keeps the new passwords
+    in your Mac's Keychain instead, and when you ask, it makes a file you import
+    into Apple Passwords or Google in a few clicks.
+
+Ask Claude "connect my password manager" (or type `/password-manager`) any time.
+
 ## What it will never do
 
 - Apply to anything without you pressing a button.
@@ -73,6 +95,9 @@ alone and it closes when done.
   on LinkedIn or anywhere else.
 - Make up experience on your resume or guess an answer on a form. If a form asks
   something it does not know, it stops and tells you exactly what is needed.
+- Use or see your own passwords. If you connect a password manager, it only
+  creates new passwords for job sites, files each one in your password manager
+  first, and never writes them anywhere else.
 - Send your information anywhere except the job applications you approve.
 
 ## Your information

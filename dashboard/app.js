@@ -2500,6 +2500,15 @@ function renderGuide(root) {
       ["Update from email", "Reads your recruiting email and moves cards when a company replied: a screen call, an interview, an offer or a no. It never sends or deletes email."],
     ]))}
 
+    ${guideSection("Job sites that want you to make an account", (() => {
+      const pm = ((DB.candidate || {}).integrations || {}).password_manager || "none";
+      const names = { "1password": "1Password", bitwarden: "Bitwarden", "mac-keychain": "your Mac's Keychain" };
+      const now = pm === "none"
+        ? `<p><b>Right now:</b> no password manager is connected. The search uses <b>Sign in with Google</b> when a site offers it; otherwise the card says <b>Needs you</b> with the link, and it takes about 10 minutes to apply yourself.</p>`
+        : `<p><b>Right now:</b> connected to <b>${esc(names[pm] || pm)}</b>. When a site needs an account, the apply queue makes one with a new strong password, saves the password there first, confirms the email and finishes the application.${pm === "mac-keychain" ? " Ask Claude to <b>export my job-site passwords</b> now and then to copy them into Apple Passwords or Google." : ""}</p>`;
+      return now + `<p>To change this, ask Claude <b>"connect my password manager"</b>. 1Password works fully on its own; Bitwarden (free) does too; Apple and Google passwords need a quick import now and then, because they do not let programs save passwords.</p>`;
+    })())}
+
     ${guideSection("What the colours mean", guideList([
       ["Green", "Good news: a strong match, applied, a conversation, you meet a requirement."],
       ["Gold", "Worth a look, or something to keep an eye on, like pay not listed."],
@@ -2507,13 +2516,14 @@ function renderGuide(root) {
       ["Grey", "Neutral information, or a weak score."],
     ]))}
 
-    ${guideSection("Need help?", `<p>Open Terminal, type <b>claude</b> and press Enter, then ask in plain words. For example:</p>
+    ${guideSection("Need help?", `<p>Double-click <b>Job Search Assistant</b> on your Desktop, then ask in plain words. For example:</p>
       <ul class="guide-bullets">
         <li>"Explain how my job search works."</li>
         <li>"Change the search times to 9am and 5pm."</li>
         <li>"I want to care less about pay and more about remote work."</li>
         <li>"Add Project Manager to the job titles I'm looking for."</li>
         <li>"Something looks broken on my dashboard, can you check?"</li>
+        <li>"Connect my password manager."</li>
       </ul>`)}
   </div>`;
 }

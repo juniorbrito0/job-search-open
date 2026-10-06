@@ -15,9 +15,20 @@
   "goal_summary": "FILL ME IN: one paragraph in plain words about the kind of role and company you want.",
   "target_titles": [],
   "strengths": [],
-  "industries": {"preferred": [], "open": [], "off_limits": []},
-  "experience_years": {"total": 0, "in_function": 0, "function_label": ""},
-  "work_authorization": {"countries": [], "note": ""},
+  "industries": {
+    "preferred": [],
+    "open": [],
+    "off_limits": []
+  },
+  "experience_years": {
+    "total": 0,
+    "in_function": 0,
+    "function_label": ""
+  },
+  "work_authorization": {
+    "countries": [],
+    "note": ""
+  },
   "home_area": {
     "label": "",
     "cities": [],
@@ -25,15 +36,28 @@
     "radius_km": 40
   },
   "location_buckets": [
-    {"label": "Remote", "pattern": "remote"},
-    {"label": "Other / unclear", "pattern": ""}
+    {
+      "label": "Remote",
+      "pattern": "remote"
+    },
+    {
+      "label": "Other / unclear",
+      "pattern": ""
+    }
   ],
   "remote_search_country": "Canada",
   "calendar_url": "",
   "outreach_pitch": "",
   "schedule": {
-    "search_times": ["08:00", "16:00"],
-    "weekly_digest": {"enabled": true, "weekday": 5, "time": "10:00"}
+    "search_times": [
+      "08:00",
+      "16:00"
+    ],
+    "weekly_digest": {
+      "enabled": true,
+      "weekday": 5,
+      "time": "10:00"
+    }
   },
   "sources": {
     "linkedin_alert_emails": true,
@@ -43,13 +67,26 @@
     "communitech": false,
     "startup_watch": true
   },
-  "startup_watch": {"region_label": "", "cities": [], "max_employees": 100, "daily_new": 3},
+  "startup_watch": {
+    "region_label": "",
+    "cities": [],
+    "max_employees": 100,
+    "daily_new": 3
+  },
   "integrations": {
     "gmail": "claude-connector",
     "granola": false,
     "wispr_flow": false,
-    "github_backup": false
+    "github_backup": false,
+    "password_manager": "none",
+    "password_vault": "Job Portals"
   },
-  "notifications": {"email_strong_matches": true, "mac_notifications": true},
-  "dashboard": {"port": 7411, "share_on_home_wifi": false}
+  "notifications": {
+    "email_strong_matches": true,
+    "mac_notifications": true
+  },
+  "dashboard": {
+    "port": 7411,
+    "share_on_home_wifi": false
+  }
 }

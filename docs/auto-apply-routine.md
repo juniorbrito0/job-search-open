@@ -58,11 +58,24 @@ LinkedIn Easy Apply, or the employer's own application form.
   salary, office days, dates, demographic answers: only from the profile. If one
   is missing, stop on that role and mark it blocked with the exact question.
 - **Never** touch a CAPTCHA (a "prove you are human" box), attest to something
-  untrue, or type a password.
-- **New accounts:** if the portal offers "Sign in with Google" or "Continue with
-  Google", use it. Otherwise do not create an account: mark the role blocked with
-  the portal link and the words "This one needs an account. It takes about 10
-  minutes to apply yourself here: <link>".
+  untrue, or type any password other than one `save_login.py` just gave you.
+- **New accounts:** a portal that wants an account is not a blocker when a
+  password manager is connected.
+  1. If it offers "Sign in with Google" or "Continue with Google", use that.
+  2. Otherwise, if `profile/candidate.json → integrations.password_manager` is not
+     `none`, get a password with
+     `python3 scripts/save_login.py --title "<Company> <Portal>" --url "<apply URL>"`.
+     It prints only the password (it files it in the password manager first, and
+     running it again returns the same password, so a retry never makes a second
+     account). Sign up with the candidate's email and that password, open the
+     confirmation email in Gmail and click the link if asked, then continue.
+  3. If no password manager is connected (the script exits with code 3), mark the
+     role blocked: "This one needs an account. Connect a password manager (ask me
+     about it) or apply yourself here in about 10 minutes: <link>".
+  - Never call `op` or `bw` yourself, and never write the password anywhere
+    (files, logs, `apply_result`, notes). Say "saved to your password manager".
+  - "The password manager failed" is never a reason to leave a role: the script
+    always prints a password and holds it safely until the manager answers.
 - **Video or live assessments** (recorded video, one-way video interview, timed
   test, ID check): do not apply. Mark it blocked and say what the gate is.
 - Never message, connect, post, follow or change settings on LinkedIn.
