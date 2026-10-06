@@ -1,4 +1,6 @@
-python-docx==1.2.0
-lxml==6.1.1
-playwright==1.62.0
-pypdf==6.16.2
+# Ranges, not exact pins: a new Mac's built-in Python is 3.9, and pip picks the
+# newest version that works with whatever Python this Mac has.
+python-docx>=1.1,<2
+lxml>=5.2
+playwright>=1.49
+pypdf>=4.0

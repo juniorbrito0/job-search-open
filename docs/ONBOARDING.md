@@ -90,8 +90,10 @@ Then play it back briefly: "Here's what I've got: 6 years, mostly in X, most
 recently Y at Z. Is anything missing or out of date?" Ask for anything missing
 that applications always want: phone, LinkedIn link, city.
 
-Build the master resume once (`.venv/bin/python generate_resume.py`) when the
-tools are ready, open the PDF for them (`open <file>`), and ask if it looks right.
+Build the master resume once (`.venv/bin/python generate_resume.py`, which writes
+Word files into `Resume/`) when the tools are ready, turn the 2-page one into a
+PDF with `soffice --headless --convert-to pdf --outdir Resume <file>`, open the
+PDF for them (`open <file>`), and ask if it looks right.
 Tweak until they are happy. This is the base every tailored version starts from.
 
 ## Step 3 of 8: Interview (15 minutes)

@@ -70,8 +70,10 @@ install_python_env() {
   py="$(pick_python)" || { echo "No Python 3.9 or newer found. Install Apple's developer tools first."; exit 1; }
   [[ -x "$VENV/bin/python" ]] || "$py" -m venv "$VENV"
   "$VENV/bin/pip" install -q --upgrade pip
-  "$VENV/bin/pip" install -q -r "$PROJECT/requirements.txt" && ok "Python packages installed"
-  "$VENV/bin/playwright" install chromium >/dev/null 2>&1 && ok "Browser for public career pages installed"
+  if "$VENV/bin/pip" install -q -r "$PROJECT/requirements.txt"; then ok "Python packages installed"
+  else echo "Python packages could not be installed (see the lines above)."; exit 1; fi
+  "$VENV/bin/playwright" install chromium >/dev/null 2>&1 && ok "Browser for public career pages installed" \
+    || todo "The browser for public career pages did not install; career pages that need it will be skipped"
 }
 
 node_bin() {
