@@ -1,6 +1,6 @@
 # Apply queue routine
 
-**This runs only when the candidate presses "Apply queue now" on the dashboard.**
+**This runs only when the candidate presses "Run apply queue" on the dashboard.**
 There is no schedule: nothing is ever submitted while the candidate is not
 looking. The runner is `scripts/auto-apply.sh`; if the queue is empty it exits
 before this file is read. Every run stamps `dashboard/data/.last-apply-at`. What

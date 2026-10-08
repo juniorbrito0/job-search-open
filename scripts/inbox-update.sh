@@ -1,6 +1,6 @@
 #!/bin/bash
 # On-demand inbox update.
-# Started from the dashboard "Update from email" button. Reads Gmail and moves
+# Started from the dashboard "Check email now" button. Reads Gmail and moves
 # pipeline cards when an email is a clear employer outcome. Not the Friday weekly-comms job:
 # that one stays read-only and writes the digest.
 

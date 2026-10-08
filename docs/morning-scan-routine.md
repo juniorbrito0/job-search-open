@@ -14,7 +14,7 @@ their scoring rules in `dashboard/data/scoring-profile.json`, their resume in
 `profile/resume.json`.
 
 This job **finds and scores only**. It never submits an application. Applying
-happens only when the candidate presses **Apply queue now** on the dashboard
+happens only when the candidate presses **Run apply queue** on the dashboard
 (`docs/auto-apply-routine.md`).
 
 All paths are relative to the project root (the folder holding `docs/`,

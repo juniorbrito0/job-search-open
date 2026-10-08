@@ -56,7 +56,7 @@ surprising job is never silently thrown away.
 
 ## It learns from you
 
-Every time you press **Disagree** and pick a reason, it is saved. Future
+Every time you press **Not for me** and pick a reason, it is saved. Future
 searches read those reasons: if you turn down three jobs for "company too big",
 similar companies start scoring lower.
 

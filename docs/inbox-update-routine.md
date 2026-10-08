@@ -1,6 +1,6 @@
 # Inbox update routine
 
-Started from the dashboard **Update from email** button. It reads the candidate's
+Started from the dashboard **Check email now** button. It reads the candidate's
 Gmail and **moves pipeline cards** when an email is a clear employer outcome, and
 writes a short diary note on the card (a title and a one-line quote, never the
 whole email). The weekly digest (`docs/weekly-comms-routine.md`) is read-only;

@@ -1,111 +1,85 @@
 # Job Search dashboard: design system
 
-**Signal desk:** a calm, modern product UI built for one person scanning job
-postings. Cool canvas, hairline borders, almost no drop shadow, frosted top bar.
-Tokens live as CSS custom properties in `dashboard/styles.css` (`:root` for
-light, `[data-theme="dark"]` for dark). Components consume tokens. Never
-hardcode colours, type, radius or shadow.
+The dashboard uses the same look as the Job Search room of the Command hub it
+was taken from: **Materio** (an MUI admin theme) neutrals, a violet primary,
+tonal chips, soft grey rows on white cards. It is rebuilt here in plain HTML,
+CSS and JavaScript, so there is still no build step and nothing to install.
+Tokens live as CSS custom properties at the top of `dashboard/styles.css`
+(`:root` for light, `[data-theme="dark"]` for dark). Components read tokens;
+never hardcode a colour, radius or shadow.
 
-- **Palette (light):** canvas `--paper` #F4F5FA, raised `--paper-raised` #FFFFFF,
-  ink `--ink` #2F2B3D, accent `--ember` #2563EB (links, Dream fit 5, live
-  signal), `--moss` #56CA00 (agree, Easy Apply, applied, good news), `--gold`
-  #FFB400 (Dream fit 4, things to watch), `--slate` #8A8D93 (Dream fit 3),
-  `--danger` #FF4C51.
-- **Palette (dark):** canvas #0B0C10, raised #14161C, ink #EEF0F4, accent
-  #FF6D4D, moss #34C48B, gold #E0A63A, slate #8B9BB0.
-- **Type:** Inter (display and body), the system monospace for counts, dates
-  and small labels.
-- **Motion:** cards lift a couple of pixels on hover. The search pulse dot is
-  the only looping motion. `prefers-reduced-motion` turns the lift off.
-- **Shape:** 10px cards, 8px controls, square score badges. Signature is a 3px
-  **score rail** on the left of each Review card.
-- **Atmosphere:** faint film grain over the canvas, frosted top bar and bulk bar.
-- **Score colours:** Dream fit 5 accent, 4 gold, 3 slate, 1 and 2 faint ink.
-  Worth applying is an outlined square (moss at 4 and 5). Match % is a pill:
-  moss at 80%+, gold at 60 to 79%, faint below.
-- Dark mode is first-class: toggle in the top bar, remembered in
-  `localStorage`, defaults to the computer's setting.
+## Tokens
+
+| Token | Light | Dark | Used for |
+|---|---|---|---|
+| `--canvas` | #F4F5FA | #28243D | page background |
+| `--paper` | #FFFFFF | #312D4B | cards, dialogs |
+| `--ink` | #2F2B3D | #E7E3FC | text |
+| `--primary` | #8C57FF | #8C57FF | buttons, active tab, selected chips, score dots |
+| `--hero` | #2563EB | #5B8CFF | the dot beside the title, nothing else |
+| `--good` | #56CA00 | | score 4 and 5, "ok" status |
+| `--watch` | #FFB400 | | score 3, things waiting on you |
+| `--bad` | #FF4C51 | | failures, "Not for me" |
+
+Type is Inter. Cards are 10px radius with a soft shadow, rows 8px with a faint
+grey fill, chips are pills. Dark mode is first-class: the sun icon toggles it,
+it is remembered in `localStorage`, and it defaults to the computer's setting.
+
+## The page pattern
+
+1. **One title** with its hero dot, and "for <first name>" beside it.
+2. **Actions** on the right: Search now (outlined), Run apply queue
+   (filled, the only filled button in the bar), Refresh, the theme toggle.
+3. **The status strip.** One line of small pills, each a dot and a value:
+   board up or down, last search, apply queue, waiting on you, in play. It
+   sticks to the top with the title. Hovering a pill says what it means and
+   where the number comes from.
+4. **Alerts**, only when something is wrong: the board not answering, the
+   apply queue wedged or failed, the search stuck. Red edge, plain words, and
+   the exact thing to ask Claude.
+5. **One card of tabs**: Review, Pipeline, Apply queue, Applied, Startups,
+   Turned down, Rejected, Lost, Screened out, Analytics, Guide. Counts in
+   brackets. A brand-new install opens on Guide.
+6. **A source line** at the bottom.
+
+## Rows
+
+Every job is the same row everywhere: company (click it to open the job),
+title, a grey line of place, work model, pay and size, then a `% match` chip
+and a `Score` chip (green at 4 and 5, gold at 3). Under that, two lines say
+**why** each number is what it is and what kept it from being higher, worded
+from the search's own fit analysis and score rationale (`buildWhy` in
+`app.js`). Review rows add the summary and the buttons Apply for me (filled),
+Interested (outlined), Not for me (red text), Posting.
+
+## Filter bar
+
+Shared by every list tab. Collapsed it is one line: Find, three quick score
+chips (everything, 3 and up, the strong ones), Filters, and "N of M". Open, it
+adds job title, location, work model, company size, minimum score and match,
+yearly pay in the candidate's currency, and the two dates. Nothing filters
+silently: every active filter shows as a chip you can remove, and Clear filters
+resets all of them.
+
+## Job panel
+
+Clicking a company opens a large dialog: stage menu, Open the posting, the
+tailored resume (or a button to prepare one), the why lines, then two
+columns. Left: Applying, Resume keywords, Reaching out, Why you and what is
+thin, What has happened, Add a note, Research, the full posting. Right: the
+five scores as clickable dots with the search's rationale under each, the
+details list, how it ended, why it was turned down.
 
 ## Writing on the page
 
 The person using this is not technical. Every label, empty state, tooltip and
 toast is plain, friendly English addressed to "you". No jargon (say "company
-application form", not "ATS"), no em or en dashes, no dates of internal
-changes. Empty states always say what will fill the space and when, using the
-search times from `profile/candidate.json`.
+application form", not "ATS"), no em or en dashes. Empty states say what will
+fill the space and when, using the search times from `profile/candidate.json`.
+Anything that sends a real application asks first.
 
 ## What comes from the candidate profile
 
 `/api/data` returns `candidate` (from `profile/candidate.json`, with safe
-defaults). The page reads:
-
-- `first_name` for the greeting on the Guide and the "For <name>" line under
-  the brand.
-- `schedule.search_times` and `schedule.weekly_digest` for every "when does it
-  run" sentence and the Search now tooltip.
-- `location_buckets` for the Location mix chart on Analytics.
-- `startup_watch.region_label` and `max_employees` for the Startups intro.
-- `experience_years.in_function` for the years line on the Rejected tab.
-- Pay filter bands come from `scoring-profile.json → dimensions.comp.floor_cad`
-  and `bonus_cad`, labelled in `candidate.currency`.
-
-## Tabs
-
-Review, Pipeline, Startups, Archive, Screened out, Analytics, Rejected, Lost,
-Guide. Tabs sit in a recessed track and wrap as a group rather than crushing a
-label. The active tab is a raised chip. Empty counts hide.
-
-A brand-new install (no positions yet) opens on **Guide**, so the first thing
-anyone sees is an explanation rather than an empty board.
-
-### Guide
-
-Built from the same `.panel` and `.verdict` pieces as Analytics. Each section is
-a `.guide-section` panel holding either a `.guide-list` (two-column term and
-explanation grid, one column under 640px), `.guide-bullets` or `.guide-steps`
-(numbered, accent markers). Real badges are reused inside the list as
-`.guide-chip` so the explanation shows the exact thing it explains. A "Your
-first day" checklist appears only while there are no positions.
-
-### Rejected and Lost
-
-All numbers are computed from the data; no sentence names a company or a
-person unless it comes from a position record. Sections hide themselves when
-they have nothing to show. Both tabs end with an **Insights** panel that renders
-`dashboard/data/insights.md` (written by Claude on request) through the same
-markdown renderer as company research; when the file is missing the panel says
-what to ask Claude.
-
-## Pipeline board (kanban)
-
-One column per stage (Interested, Applied, Screen, Interview, Offer,
-Disqualified, No answer). Columns share a grid track so all seven fit at about
-1300px; each scrolls on its own. Below 860px it stacks vertically.
-
-**Cards carry five things and nothing else:** title, company, posted date,
-applied date, Dream fit (plus Worth applying). Everything else lives on the
-job's own page.
-
-- Titles clamp to 3 lines, company to 2, full title in a tooltip.
-- Dates render as `4 Aug` in mono; the year only when it is not this year.
-- Interested cards show one status line when an apply is queued
-  (`Queued to apply`, moss) or blocked (`Needs you`, red), otherwise the Apply
-  button. Strong matches can also show a message flag: `Message ready`,
-  `Send queued`, `Message sent`, `Message blocked`.
-
-The job's own page has a **Diary** panel: dated events plus a note field.
-
-## Run controls
-
-The top bar shows the last search time under the brand and a **Search now**
-button. While a search runs, a pulse dot sits beside it and the label becomes
-`Searching…`.
-
-The Pipeline tab has a run bar with two actions:
-
-- **Apply queue now (N):** moss, like Agree. Disabled when nothing is waiting.
-  Asks once before it sends real applications.
-- **Update from email:** reads recruiting email and moves cards.
-
-Each keeps a one-line mono timestamp underneath. Buttons use `.btn`. Do not
-invent a second button style.
+defaults). The page reads `first_name`, `schedule.search_times`,
+`schedule.weekly_digest`, `startup_watch.region_label` and `currency`.

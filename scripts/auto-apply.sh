@@ -1,5 +1,5 @@
 #!/bin/bash
-# Apply runner. Runs only when the candidate presses Apply queue now on the
+# Apply runner. Runs only when the candidate presses Run apply queue on the
 # dashboard; there is no schedule.
 # If the apply queue is empty, exit quietly. Never opens LinkedIn on an empty run.
 
@@ -157,7 +157,7 @@ case $? in
   *) PM_STATE="No password manager is connected: use Sign in with Google when offered, otherwise mark account-only portals blocked for the candidate." ;;
 esac
 
-PROMPT="Run the apply queue. Read docs/auto-apply-routine.md top to bottom, then execute it exactly as written, working autonomously and without asking questions. Apply to AT MOST $BATCH positions this run, highest overall score first, then stop and report: there are $PENDING on the queue and the rest wait for the next press of Apply queue now. If the queue is empty, stop. Do not search for new jobs. Do not message, connect, post, or change LinkedIn account settings. On success set applied_at and status applied (and auto_applied when auto_apply_queued is true). On failure leave a plain-English apply_result that tells the candidate exactly what to do next, and never claim it was applied. Report progress as you go, exactly as section 7 of the routine describes, because the candidate watches this run on the dashboard. Portals that demand a new account: follow the New accounts rule in the routine. $PM_STATE Never run op or bw yourself and never write a password anywhere. Append a dated note to docs/WORKLOG.md only if you submitted or newly blocked something."
+PROMPT="Run the apply queue. Read docs/auto-apply-routine.md top to bottom, then execute it exactly as written, working autonomously and without asking questions. Apply to AT MOST $BATCH positions this run, highest overall score first, then stop and report: there are $PENDING on the queue and the rest wait for the next press of Run apply queue. If the queue is empty, stop. Do not search for new jobs. Do not message, connect, post, or change LinkedIn account settings. On success set applied_at and status applied (and auto_applied when auto_apply_queued is true). On failure leave a plain-English apply_result that tells the candidate exactly what to do next, and never claim it was applied. Report progress as you go, exactly as section 7 of the routine describes, because the candidate watches this run on the dashboard. Portals that demand a new account: follow the New accounts rule in the routine. $PM_STATE Never run op or bw yourself and never write a password anywhere. Append a dated note to docs/WORKLOG.md only if you submitted or newly blocked something."
 
 # Not `claude` directly: agent-run.sh owns the watchdog and the timeout, and it
 # never retries a task failure on another provider (re-running a half-finished

@@ -50,9 +50,9 @@ the start of every session.
   `schedule.search_times`, runs `scripts/morning-scan.sh`, which follows
   `docs/morning-scan-routine.md` in a headless Claude session. Finds and scores
   only; never applies.
-- **Apply queue**: only when they press **Apply queue now** on the dashboard
+- **Apply queue**: only when they press **Run apply queue** on the dashboard
   (`scripts/auto-apply.sh`, `docs/auto-apply-routine.md`). No schedule, ever.
-- **Update from email**: dashboard button (`scripts/inbox-update.sh`,
+- **Check email now**: dashboard button (`scripts/inbox-update.sh`,
   `docs/inbox-update-routine.md`).
 - **Weekly digest**: LaunchAgent `local.jobsearch.weekly-comms`
   (`scripts/weekly-comms.sh`, `docs/weekly-comms-routine.md`), read-only.
@@ -87,7 +87,7 @@ the start of every session.
 - `rejected` = the candidate said no. `disqualified` = it ended any other way.
   Never mix them. After any move to `disqualified`, run
   `scripts/classify_disqualified.py` and `scripts/classify_applications.py`.
-- Their "Disagree" reasons go to `scoring-profile.json → learning_log`; always
+- Their "Not for me" reasons go to `scoring-profile.json → learning_log`; always
   honour them when scoring.
 - Hold `fcntl.flock` on `dashboard/data/.lock` when writing data files; write via
   temp file and rename.

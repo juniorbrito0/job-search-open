@@ -2,7 +2,7 @@
 """Put score-4+ positions on the apply queue. Never submits an application.
 
 The search job calls this after scoring. The apply job (started only by the
-Apply queue now button on the dashboard) reads the same flags. Turn the whole thing off with
+Run apply queue button on the dashboard) reads the same flags. Turn the whole thing off with
 `scoring-profile.json → auto_apply.enabled: false`.
 
     .venv/bin/python scripts/queue_auto_apply.py
@@ -76,7 +76,7 @@ def _now() -> str:
 
 def auto_apply_config(profile: dict) -> dict:
     """Default is ON (strong matches are queued; nothing is sent until the
-    candidate presses Apply queue now on the dashboard)."""
+    candidate presses Run apply queue on the dashboard)."""
     block = profile.get("auto_apply")
     if block is None:
         return {"enabled": True, "min_overall": 4}

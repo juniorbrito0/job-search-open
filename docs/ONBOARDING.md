@@ -159,7 +159,7 @@ Then ask, as multiple choice, whether to change:
 - Weekly summary day and time, or off.
 - Email me when a strong match (4 or 5) shows up: yes / no.
 - **Auto-queue:** put strong matches on the apply list automatically, so pressing
-  "Apply queue now" sends them (recommended: **off for the first two weeks** until
+  "Run apply queue" sends them (recommended: **off for the first two weeks** until
   they trust the scores), or always choose by hand.
 - Job sources: LinkedIn (recommended), LinkedIn alert emails (recommended),
   Y Combinator and Wellfound startup boards, Communitech (Canadian tech; only

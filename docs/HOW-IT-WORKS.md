@@ -17,8 +17,8 @@ unless you press a button.
 |---|---|---|
 | **Job search** | Twice a day, 8:00 am and 4:00 pm (you can change this) | Nothing. If your Mac was asleep, it runs when you wake it. If it was shut down, it waits for the next time. |
 | **Weekly email summary** | Fridays at 10:00 am (you can change or switch it off) | Read it on the dashboard or ask Claude about it. |
-| **Update from email** | Only when you press the button | Press it after you get replies from employers. |
-| **Apply queue** | Only when you press **Apply queue now** | Check the list first. |
+| **Check email now** | Only when you press the button | Press it after you get replies from employers. |
+| **Apply queue** | Only when you press **Run apply queue** | Check the list first. |
 | **Dashboard** | Always on | Bookmark http://localhost:7411 |
 
 Each search takes roughly 20 to 60 minutes. A browser window may open by itself
@@ -40,31 +40,38 @@ alone and it closes when done.
 
 | Tab | What it is for |
 |---|---|
-| **Review** | New jobs waiting for your opinion, best first. Your main to-do list. |
-| **Pipeline** | Jobs you said yes to, laid out by stage: interested, applied, screening call, interview, offer. |
+| **Review** | New jobs waiting for your opinion, best first. Each one says why it got its score and what kept it from being higher. Your main to-do list. |
+| **Pipeline** | Jobs you said yes to, by stage: interested, applied, screening call, interview, offer. **Check email now** lives here. |
+| **Apply queue** | Jobs waiting to be sent and, while a run is going, which one it is on and how each one went. |
+| **Applied** | Every application sent, newest first. |
 | **Startups** | The watchlist of small companies near you. |
-| **Archive** | Jobs you said "not for me" to. You can restore any of them. |
-| **Screened out** | Jobs hidden by one of your deal-breakers, with the reason. Check it now and then to be sure nothing good was hidden. |
-| **Analytics** | Charts: how many jobs found and applied to per week, where they come from, score spread. |
+| **Turned down** | Jobs you said "not for me" to. **Back to Review** brings one back. |
 | **Rejected** | Only jobs where an employer wrote back to say no, and what they have in common. |
-| **Lost** | Everything else that ended: postings that closed, applications with no answer after 14 days. |
+| **Lost** | Everything else that ended: postings that closed, applications with no answer. |
+| **Screened out** | Jobs hidden by one of your deal-breakers, with the reason. Check it now and then to be sure nothing good was hidden. |
+| **Analytics** | Your numbers: where every job stands, where they came from, how the closed ones ended. |
 | **Guide** | This explanation. |
 
 ## The buttons you will use most
 
-- **Search now** (top bar): run a search right away instead of waiting.
-- On a Review card: **Agree** moves it to your Pipeline. **Disagree** asks you
-  why (location, pay, industry, too senior or junior, company size, the work
-  itself, other). Your reasons teach future scores.
-- **Apply for me**: puts the job on the apply queue.
-- **Apply queue now** (Pipeline): applies to everything on the queue, up to 8 at
-  a time. You can watch the progress live.
-- **Prepare tailored resume**: makes a resume version for that job.
-- **Update from email** (Pipeline): reads replies from employers and moves cards
+- **Search now** (top): run a search right away instead of waiting.
+- **Run apply queue** (top): applies to everything on the queue. Watch it live
+  on the Apply queue tab.
+- **Refresh** (top): reads everything again. The page also refreshes itself.
+- On a job in Review: **Apply for me** puts it on the apply queue,
+  **Interested** moves it to your Pipeline, **Not for me** asks you why
+  (location, pay, industry, level, company size, role scope, other). Your
+  reasons teach future scores. **Posting** opens the original ad.
+- Tick the boxes to do the same to several jobs at once (including
+  **Prepare resumes**).
+- Click a company name to open everything about that job: the full posting,
+  the scores (click a dot to change one), research, a tailored resume, and a
+  diary for notes.
+- **Check email now** (Pipeline): reads replies from employers and moves cards
   (for example from Applied to Interview).
-- **Send this message**: sends the drafted note to a hiring manager. Nothing is
-  sent until you press it.
-- **◐**: switch between light and dark.
+- **Send it**: sends the drafted note to a hiring manager. Nothing is sent
+  until you press it.
+- The sun icon: switch between light and dark.
 
 ## Job sites that want you to make an account
 

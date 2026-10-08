@@ -49,7 +49,7 @@ def body_for(rows: list[dict], port: int = 7411) -> tuple[str, str]:
 
     lines = [
         "New roles scored 4 or 5 (Dream fit). If auto-queue is on, they are already on the apply queue;",
-        "nothing is sent until you press Apply queue now on the dashboard.",
+        "nothing is sent until you press Run apply queue on the dashboard.",
         f"Dashboard: http://localhost:{port}",
         "",
     ]

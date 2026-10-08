@@ -34,7 +34,7 @@ For every company found, compare with `dashboard/data/positions.json`:
   application may never have arrived.
 
 Never change a status here. Show the evidence and let the candidate (or the
-**Update from email** button) decide.
+**Check email now** button) decide.
 
 ## 5. Write
 
