@@ -42,9 +42,14 @@ If the prompt says this is a **manual dashboard run**, just search now.
 Only use sources switched on in `candidate.json → sources`. A source that errors
 is reported as a **failure** in the run notes, never as "zero jobs".
 
-**a) LinkedIn job-alert emails (`linkedin_alert_emails`).** Use whichever Gmail
-tool is available in this session (the claude.ai Gmail connector's thread search,
-or a Google Workspace server). Search the candidate's mailbox with:
+**a) LinkedIn job-alert emails (`linkedin_alert_emails`).** Use the candidate's
+Gmail. Which Gmail tool: when `profile/candidate.json → integrations.gmail` is
+`google-oauth` (the candidate connected Gmail on their web page), use
+`.venv/bin/python scripts/gmail.py search "<query>" --max 100` and
+`.venv/bin/python scripts/gmail.py read <id>` (read-only, JSON out). In that
+case **never** use a claude.ai Gmail connector even if one shows up: on a shared
+Mac it would be someone else's mailbox. Otherwise use the claude.ai Gmail
+connector or a Google Workspace server. Search the candidate's mailbox with:
 
 ```
 from:(jobalerts-noreply@linkedin.com OR jobs-noreply@linkedin.com) newer_than:1d
@@ -58,8 +63,9 @@ the job URL. If no Gmail tool is available, say so in the run notes.
 `.venv/bin/python scripts/li_guest_sweep.py`: it reads LinkedIn's public job
 search (no login) for every title in `scoring-profile.json → search_scope.titles`
 across the candidate's home area and remote-in-country, last 24 hours, and prints
-JSON. Then, if the `playwright-session` browser tools are available (the job
-browser, signed in to LinkedIn), open
+JSON. Then, unless `candidate.json → linkedin_mode` is `"guest"`, if the
+`playwright-session` browser tools are available (the job browser, signed in to
+LinkedIn), open
 `https://www.linkedin.com/jobs/collections/recommended/` and take the postings
 there too, noting whether each card says **Easy Apply** (`easy_apply: true`).
 
@@ -70,6 +76,9 @@ there too, noting whether each card says **Easy Apply** (`easy_apply: true`).
   change any setting.
 - If LinkedIn blocks the browser or it is not signed in, carry on with the other
   sources and say so in the notification.
+- `linkedin_mode: "guest"` means this copy never signs in to LinkedIn: use only
+  the public listings above, the public posting endpoint, and the alert emails.
+  Do not open linkedin.com pages in the job browser at all.
 
 **c) Y Combinator and Wellfound (`yc_jobs`, `wellfound`).** Run
 `.venv/bin/python scripts/sweep_yc_wellfound.py` (prints JSON). Every job in
@@ -97,6 +106,24 @@ Its on-site hint is often wrong: read the posting before applying the on-site ru
    a careers page again about weekly. `dead`: skip, re-check monthly. Matches
    become positions with `source: "startup-watch"`. Update `last_checked` and
    `open_matches` on every run.
+
+**f) Companies the candidate named (`candidate.json → target_companies`).** Every
+run, for each `{name, url}`: open the careers page (`url`; if it is blank, find
+the company's careers page first and write it back into `target_companies`) and
+take every opening that matches the target titles (`source: "target-company"`).
+Many careers pages sit on Greenhouse, Lever, Ashby, Workday or similar: use the
+board's public job list when there is one, and the job browser only when the
+page needs JavaScript. A company with nothing suitable today is normal; do not
+report it as a failure. Set `target_company: true` on every position, from any
+source, whose company is on this list.
+
+**g) Other sites the candidate named (`candidate.json → sources.custom_sites`).**
+For each `{url, note}`: read the page (plain fetch first, the job browser if it
+needs JavaScript), follow its listing or search to postings that match the
+target titles and the `note`, and take them (`source: "custom-site"`, with
+`source_detail` set to the site's domain). A site that blocks reading is a
+failure to report, not "zero jobs". Never sign up, sign in or submit anything on
+these sites.
 
 **Deep-research cap: about 25 new positions per run.** Every relevant posting
 still gets a scored card; the cap only decides where the expensive research and
@@ -169,6 +196,8 @@ Score per `scoring-profile.json`:
   the four miss, exactly as `dimensions.overall.description` says. A hard problem
   caps it at 2.
 - Apply `learning_log` patterns and say so in the rationale when they moved a score.
+- `target_company: true` (a company the candidate named): add one point to
+  `interests` (never above 5) and say so in its rationale.
 - `score_rationale`: one plain sentence per score.
 - `match_pct` (0 to 100): how much of the posting's duties and requirements the
   candidate's resume covers.
@@ -253,14 +282,15 @@ other way (employer said no, posting closed, a standing rule). Keep them distinc
 
 1. Make sure the dashboard answers: `curl -s http://localhost:<port>/api/data`
    (port in `candidate.json → dashboard.port`, default 7411). If not:
-   `launchctl kickstart -k gui/$(id -u)/local.jobsearch.dashboard`.
+   `launchctl kickstart -k gui/$(id -u)/$(python3 scripts/instance.py label dashboard)`.
 2. If `notifications.mac_notifications` is true:
    `osascript -e 'display notification "N new jobs, X strong matches" with title "Job Search" sound name "Glass"'` with real numbers.
 3. If `notifications.email_strong_matches` is true and any new position scored 4
    or 5: run `.venv/bin/python scripts/notify_strong_matches.py --since YYYY-MM-DD`
    (today). If it prints `"send": true`, send that subject and body **to the
-   candidate's own address only** with the Gmail tool. If sending is not possible,
-   say so in the worklog.
+   candidate's own address only** with the Gmail tool. If sending is not possible
+   (a `google-oauth` connection is read-only and cannot send), say so in the
+   worklog.
 
 ## 9. Log
 

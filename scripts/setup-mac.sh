@@ -4,6 +4,7 @@
 #   scripts/setup-mac.sh            everything: tools, Python, data files, schedule, checks
 #   scripts/setup-mac.sh --tools    only install the tools (Python packages, Node, LibreOffice, browser)
 #   scripts/setup-mac.sh --schedule only (re)install the background jobs from profile/candidate.json
+#   scripts/setup-mac.sh --schedule-jobs  same, but leave the dashboard running (used by the web page)
 #   scripts/setup-mac.sh --check    only report what is ready and what is missing
 #   scripts/setup-mac.sh --uninstall  stop and remove the background jobs (keeps all data)
 #   scripts/setup-mac.sh --shortcuts  (re)create the two Desktop icons
@@ -22,7 +23,13 @@ TEMPLATE_DIR="$SCRIPT_DIR/launchagents"
 DOMAIN="gui/$(id -u)"
 VENV="$PROJECT/.venv"
 LOCAL_BIN="$HOME_DIR/.local/bin"
-PROFILE_DIR="$HOME_DIR/.job-search/playwright-profile"
+# A second copy of the job search on this Mac (profile/candidate.json ->
+# instance_id) gets its own job names, job browser and Keychain entries.
+instance() { /usr/bin/python3 "$SCRIPT_DIR/instance.py" "$@" 2>/dev/null; }
+INSTANCE_ID="$(instance id)"
+PROFILE_DIR="$(instance browser-profile)"
+[[ -n "$PROFILE_DIR" ]] || PROFILE_DIR="$HOME_DIR/.job-search/playwright-profile"
+label() { instance label "$1" || echo "local.jobsearch.$1"; }
 ARCH="$(uname -m)"   # arm64 (Apple silicon) or x86_64 (Intel)
 export PATH="$LOCAL_BIN:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 
@@ -168,6 +175,12 @@ install_browser_server() {
   fi
   [[ -x "$pw_bin" ]] || { todo "Could not install the job browser server."; return 1; }
   ok "Job browser server installed"
+  if instance isolated; then
+    # This copy's Claude sessions read only their own MCP list (scripts/instance.py),
+    # never the Mac owner's, so nothing is registered with Claude itself.
+    instance claude-args >/dev/null && ok "Job browser set up for this copy only ($PROFILE_DIR)"
+    return
+  fi
   claude="$(claude_bin)" || { todo "Claude Code is not installed yet, so the job browser could not be connected."; return 1; }
   if "$claude" mcp list 2>/dev/null | grep -q '^playwright-session'; then
     ok "Claude already knows the job browser"
@@ -224,43 +237,52 @@ except Exception: d={}
 sys.exit(0 if (d.get("integrations") or {}).get("github_backup") else 1)' "$PROJECT/profile/candidate.json"
 }
 
+# $1 is the job (dashboard, search, weekly-comms, autopush). The template is
+# named for the plain copy; a second copy gets its own label (see label()).
 write_plist() {
-  local name="$1" src="$TEMPLATE_DIR/$1.plist" dest="$LAUNCH_DIR/$1.plist" cal=""
-  case "$name" in
-    local.jobsearch.search) cal="$(calendar_xml search)" ;;
-    local.jobsearch.weekly-comms) cal="$(calendar_xml weekly)" ;;
+  local job="$1" name src dest cal=""
+  name="$(label "$job")"
+  src="$TEMPLATE_DIR/local.jobsearch.$job.plist"
+  dest="$LAUNCH_DIR/$name.plist"
+  case "$job" in
+    search) cal="$(calendar_xml search)" ;;
+    weekly-comms) cal="$(calendar_xml weekly)" ;;
   esac
-  /usr/bin/python3 - "$src" "$dest" "$PROJECT" "$HOME_DIR" "$ACCOUNT" "$cal" <<'PY'
+  /usr/bin/python3 - "$src" "$dest" "$PROJECT" "$HOME_DIR" "$ACCOUNT" "$cal" "local.jobsearch.$job" "$name" <<'PY'
 import pathlib, sys
-src, dest, project, home, user, cal = sys.argv[1:7]
+src, dest, project, home, user, cal, plain, label = sys.argv[1:9]
 from xml.sax.saxutils import escape
 text = pathlib.Path(src).read_text()
 text = (text.replace("__PROJECT_ROOT__", escape(project)).replace("__HOME__", escape(home))
-            .replace("__USER__", escape(user)).replace("__CALENDAR__", cal))
+            .replace("__USER__", escape(user)).replace("__CALENDAR__", cal)
+            .replace(f"<string>{plain}</string>", f"<string>{escape(label)}</string>"))
 pathlib.Path(dest).write_text(text)
 PY
 }
 
 load_agent() {
-  local name="$1"
-  write_plist "$name"
+  local name
+  name="$(label "$1")"
+  write_plist "$1"
   launchctl bootout "$DOMAIN/$name" >/dev/null 2>&1 || true
   launchctl bootstrap "$DOMAIN" "$LAUNCH_DIR/$name.plist" && ok "Started $name"
 }
 
 unload_agent() {
-  launchctl bootout "$DOMAIN/$1" >/dev/null 2>&1 || true
-  rm -f "$LAUNCH_DIR/$1.plist"
+  local name
+  name="$(label "$1")"
+  launchctl bootout "$DOMAIN/$name" >/dev/null 2>&1 || true
+  rm -f "$LAUNCH_DIR/$name.plist"
 }
 
 install_schedule() {
   step "Background jobs"
   [[ -f "$PROJECT/profile/candidate.json" ]] || { todo "profile/candidate.json is missing; finish the setup interview first."; return 1; }
-  load_agent local.jobsearch.dashboard
-  load_agent local.jobsearch.search
+  load_agent dashboard
+  load_agent search
   echo "         searches at: $(/usr/bin/python3 "$SCRIPT_DIR/schedule_slot.py" --times | tr '\n' ' ')"
-  if weekly_enabled; then load_agent local.jobsearch.weekly-comms; else unload_agent local.jobsearch.weekly-comms; ok "Weekly email digest is switched off"; fi
-  if backup_enabled; then load_agent local.jobsearch.autopush; else unload_agent local.jobsearch.autopush; ok "GitHub backup is switched off"; fi
+  if weekly_enabled; then load_agent weekly-comms; else unload_agent weekly-comms; ok "Weekly email digest is switched off"; fi
+  if backup_enabled; then load_agent autopush; else unload_agent autopush; ok "GitHub backup is switched off"; fi
 }
 
 # ---------------------------------------------------------------- checks
@@ -278,7 +300,9 @@ check_all() {
   [[ -x "$VENV/bin/python" ]] && ok "Python packages" || todo "Python packages not installed (run this script with --tools)"
   node_bin >/dev/null && ok "Node" || todo "Node not installed"
   soffice_bin >/dev/null && ok "LibreOffice (resume PDFs)" || todo "LibreOffice not installed: resumes will be Word files only"
-  if [[ -n "${claude:-}" ]] && "$claude" mcp list 2>/dev/null | grep -q '^playwright-session'; then ok "Job browser connected to Claude"; else todo "Job browser not connected to Claude"; fi
+  if instance isolated; then
+    if grep -q playwright-session "$(dirname "$PROFILE_DIR")/mcp.json" 2>/dev/null; then ok "Job browser set up for this copy only"; else todo "Job browser not set up for this copy (run this script with --tools)"; fi
+  elif [[ -n "${claude:-}" ]] && "$claude" mcp list 2>/dev/null | grep -q '^playwright-session'; then ok "Job browser connected to Claude"; else todo "Job browser not connected to Claude"; fi
   local cookies="$PROFILE_DIR/Default/Cookies"
   if [[ -f "$cookies" ]] && /usr/bin/python3 -c '
 import sqlite3, shutil, sys, tempfile, os
@@ -302,7 +326,7 @@ sys.exit(0 if "li_at" in names else 1)' "$cookies" 2>/dev/null; then
   port="$(dashboard_port)"
   if curl -fsS -o /dev/null "http://127.0.0.1:$port/api/data" 2>/dev/null; then ok "Dashboard is up at http://localhost:$port"
   else todo "Dashboard is not answering on http://localhost:$port yet"; fi
-  launchctl print "$DOMAIN/local.jobsearch.search" >/dev/null 2>&1 && ok "Scheduled searches are switched on" || todo "Scheduled searches are not switched on"
+  launchctl print "$DOMAIN/$(label search)" >/dev/null 2>&1 && ok "Scheduled searches are switched on" || todo "Scheduled searches are not switched on"
 }
 
 
@@ -311,6 +335,9 @@ make_shortcuts() {
   step "Desktop shortcuts"
   local desk="$HOME_DIR/Desktop" port claude
   [[ -d "$desk" ]] || return 0
+  # A second copy is used from its web page, usually from another computer.
+  # Its icons on this Mac's Desktop would only confuse the Mac's owner.
+  [[ -z "$INSTANCE_ID" ]] || { ok "No Desktop icons for a second copy (it is used from its web page)"; return 0; }
   port="$(dashboard_port)"
   claude="$(claude_bin || echo "$LOCAL_BIN/claude")"
   printf '#!/bin/bash\n# Double-click to talk to your job-search assistant.\ncd "%s" && exec "%s"\n' "$PROJECT" "$claude" > "$desk/Job Search Assistant.command"
@@ -327,10 +354,18 @@ WEBLOC
 case "$MODE" in
   --tools)    need_clt; warn_documents; install_python_env; install_node; install_libreoffice; install_browser_server ;;
   --schedule) warn_documents || exit 1; install_schedule ;;
+  --schedule-jobs)
+    # The web page's own way to apply a new schedule: everything but the
+    # dashboard, because restarting the dashboard would cut off the very page
+    # that asked for the change.
+    warn_documents || exit 1
+    step "Background jobs (schedule only)"
+    load_agent search
+    if weekly_enabled; then load_agent weekly-comms; else unload_agent weekly-comms; ok "Weekly email digest is switched off"; fi ;;
   --check)    check_all ;;
   --shortcuts) make_shortcuts ;;
   --uninstall)
-    for n in local.jobsearch.dashboard local.jobsearch.search local.jobsearch.weekly-comms local.jobsearch.autopush; do unload_agent "$n"; done
+    for n in dashboard search weekly-comms autopush; do unload_agent "$n"; done
     echo "Background jobs stopped and removed. Your data in $PROJECT is untouched." ;;
   all|*)
     need_clt

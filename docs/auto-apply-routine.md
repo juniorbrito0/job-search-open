@@ -68,7 +68,10 @@ LinkedIn Easy Apply, or the employer's own application form.
      It prints only the password (it files it in the password manager first, and
      running it again returns the same password, so a retry never makes a second
      account). Sign up with the candidate's email and that password, open the
-     confirmation email in Gmail and click the link if asked, then continue.
+     confirmation email in Gmail and click the link if asked, then continue
+     (with `integrations.gmail: "google-oauth"`, find it with
+     `.venv/bin/python scripts/gmail.py search "newer_than:1d <portal or company>"`
+     and `read <id>`, then open the link in the job browser).
   3. If no password manager is connected (the script exits with code 3), mark the
      role blocked: "This one needs an account. Connect a password manager (ask me
      about it) or apply yourself here in about 10 minutes: <link>".

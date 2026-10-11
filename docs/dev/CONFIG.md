@@ -176,3 +176,17 @@ Mac pop-up and stores them in the macOS Keychain (service `job-search`). The app
 job only ever calls `scripts/save_login.py`. Apple Passwords and Google Password
 Manager have no programmatic write access, so their users use `mac-keychain` and
 import with `save_login.py --export-csv apple|google <file>` (then delete the file).
+
+## Web mode and second copies (candidate.json)
+
+| Key | Meaning |
+|---|---|
+| `instance_id` | "" for the only copy on this Mac. A short id ("gui") for a second copy: its own launchd labels, job browser, Keychain service and isolated Claude sessions (`scripts/instance.py`). |
+| `isolate_agent` | `true` isolates Claude sessions without an id. |
+| `language` | `"pt"` or `"en"`: the web page's language and the chat's. Employer-facing text stays English. |
+| `linkedin_mode` | `"signed-in"` (job browser signed in to LinkedIn) or `"guest"` (public listings and alert emails only). |
+| `target_companies` | `[{"name", "url"}]`: companies the candidate wants; their careers pages are checked every search and a match gets +1 Interests. |
+| `sources.custom_sites` | `[{"url", "note"}]`: extra job sites to read every search. |
+| `integrations.gmail` | `"claude-connector"`, `"google-oauth"` (the candidate's own read-only Google sign-in, `scripts/gmail.py`), or `"none"`. |
+| `gmail_address` | Set by the page when Gmail is connected. |
+| `dashboard.web_login` | `true` turns on web mode: password, onboarding chat, Assistant, My answers (`docs/WEB-MODE.md`). |

@@ -36,6 +36,8 @@ APPLICATION_FILE = DATA_DIR / "application-profile.json"
 CANDIDATE_DEFAULTS: dict[str, Any] = {
     "version": 1,
     "onboarded": False,
+    "language": "",
+    "instance_id": "",
     "name": "",
     "first_name": "",
     "pronouns": "",
@@ -49,6 +51,7 @@ CANDIDATE_DEFAULTS: dict[str, Any] = {
     "currency": "CAD",
     "goal_summary": "",
     "target_titles": [],
+    "target_companies": [],
     "strengths": [],
     "industries": {"preferred": [], "open": [], "off_limits": []},
     "experience_years": {"total": 0, "in_function": 0, "function_label": "operations"},
@@ -59,6 +62,7 @@ CANDIDATE_DEFAULTS: dict[str, Any] = {
         {"label": "Other / unclear", "pattern": ""},
     ],
     "remote_search_country": "Canada",
+    "linkedin_mode": "signed-in",
     "calendar_url": "",
     "schedule": {
         "search_times": ["08:00", "16:00"],

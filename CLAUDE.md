@@ -43,6 +43,7 @@ the start of every session.
 | Plain-language guide | `docs/HOW-IT-WORKS.md` |
 | Setup contract for the code | `docs/dev/CONFIG.md` |
 | Session log | `docs/WORKLOG.md` (append a dated entry after each substantive change) |
+| Web mode (password page, chat onboarding, Gmail sign-in, second copy on one Mac) | `docs/WEB-MODE.md`; code in `dashboard/webmode.py`, `scripts/instance.py`, `scripts/gmail.py` |
 
 ## The moving parts
 

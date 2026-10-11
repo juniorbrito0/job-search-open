@@ -18,8 +18,13 @@ is missing, sweep the last **14 days**.
 
 ## 2. Gmail sweep
 
-Use whichever Gmail tool this session has (the claude.ai Gmail connector, or a
-Google Workspace server). Search:
+Which Gmail tool: when `profile/candidate.json → integrations.gmail` is
+`google-oauth` (the candidate connected Gmail on their web page), use
+`.venv/bin/python scripts/gmail.py search "<query>" --max 100` and
+`.venv/bin/python scripts/gmail.py read <id>` (read-only, JSON out). In that
+case **never** use a claude.ai Gmail connector even if one shows up: on a shared
+Mac it would be someone else's mailbox. Otherwise use the claude.ai Gmail
+connector or a Google Workspace server. Search:
 
 ```
 after:YYYY/MM/DD (subject:(application OR interview OR "thank you for applying" OR "your application"

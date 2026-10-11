@@ -14,8 +14,8 @@ that date. First run, or no file: sweep the last 30 days.
 
 ## 2. Gmail sweep
 
-Same search as `docs/inbox-update-routine.md` section 2, with whichever Gmail
-tool this session has. Read subjects and senders first, open only real outcomes
+Same search as `docs/inbox-update-routine.md` section 2, with the same Gmail
+tool rule (`scripts/gmail.py` when `integrations.gmail` is `google-oauth`). Read subjects and senders first, open only real outcomes
 and human replies, go in small batches, and say what was missed.
 
 ## 3. Meeting notes (optional)

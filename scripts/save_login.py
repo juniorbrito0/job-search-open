@@ -24,7 +24,8 @@ Which password manager: `profile/candidate.json → integrations.password_manage
                   the candidate to do by hand.
 
 Credentials for the password manager itself live in the macOS Keychain under
-service "job-search" (put there by scripts/connect-password-manager.sh), never
+service "job-search" (or "job-search-<instance id>" for a second copy on this
+Mac; put there by scripts/connect-password-manager.sh), never
 in a file in this folder.
 
 Guarantees:
@@ -55,10 +56,13 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-CONFIG_DIR = os.path.expanduser("~/.config/job-search")
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import instance  # noqa: E402  (a second copy on this Mac keeps its own Keychain entries)
+
+CONFIG_DIR = str(instance.config_dir())
 PENDING_FILE = os.path.join(CONFIG_DIR, "pending-logins.local")
 INDEX_FILE = os.path.join(CONFIG_DIR, "logins-index.json")  # titles only, no passwords
-KEYCHAIN_SERVICE = "job-search"
+KEYCHAIN_SERVICE = instance.keychain_service()
 KEYCHAIN_LOGIN_PREFIX = "job-search login: "
 TIMEOUT = 25
 # Symbols every applicant-tracking portal accepts. Quotes, backslashes and

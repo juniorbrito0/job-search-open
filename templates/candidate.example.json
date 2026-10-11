@@ -1,6 +1,8 @@
 {
   "version": 1,
   "onboarded": false,
+  "language": "",
+  "instance_id": "",
   "name": "Full Name",
   "first_name": "First",
   "pronouns": "",
@@ -14,6 +16,7 @@
   "currency": "CAD",
   "goal_summary": "FILL ME IN: one paragraph in plain words about the kind of role and company you want.",
   "target_titles": [],
+  "target_companies": [],
   "strengths": [],
   "industries": {
     "preferred": [],
@@ -46,6 +49,7 @@
     }
   ],
   "remote_search_country": "Canada",
+  "linkedin_mode": "signed-in",
   "calendar_url": "",
   "outreach_pitch": "",
   "schedule": {
@@ -65,7 +69,8 @@
     "yc_jobs": true,
     "wellfound": true,
     "communitech": false,
-    "startup_watch": true
+    "startup_watch": true,
+    "custom_sites": []
   },
   "startup_watch": {
     "region_label": "",
@@ -87,6 +92,7 @@
   },
   "dashboard": {
     "port": 7411,
-    "share_on_home_wifi": false
+    "share_on_home_wifi": false,
+    "web_login": false
   }
 }

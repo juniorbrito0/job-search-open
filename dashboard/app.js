@@ -51,6 +51,12 @@ const TABS = [
   ["analytics", "Analytics"],
   ["guide", "Guide"],
 ];
+/* Web mode (dashboard/web.js) adds its own tabs, such as My answers, and its
+   own words for the Guide. Without it this page is exactly as before. */
+const EXTRA = window.JobSearchExtra || null;
+if (EXTRA && Array.isArray(EXTRA.tabs)) {
+  EXTRA.tabs.forEach((t) => TABS.splice(TABS.length - 1, 0, [t.key, t.label]));
+}
 const PAGE = 12;
 const MORE = 24;
 const USD_TO_CAD = 1.35;
@@ -856,6 +862,18 @@ function paintContent() {
     root.innerHTML = `<p class="empty">${S.error ? "Nothing to show until the board answers." : "Reading the board."}</p>`;
     return;
   }
+  const extra = EXTRA && Array.isArray(EXTRA.tabs) ? EXTRA.tabs.find((t) => t.key === S.tab) : null;
+  if (extra) {
+    // Its own form: drawn once per visit, so a refresh never wipes what is being typed.
+    if (root.dataset.extraTab !== S.tab) {
+      root.dataset.extraTab = S.tab;
+      root.innerHTML = extra.render();
+      if (extra.after) extra.after(root);
+    }
+    paintBusy();
+    return;
+  }
+  delete root.dataset.extraTab;
   const scope = SCOPES[S.tab];
   let bar = "";
   if (scope) {
@@ -1118,7 +1136,7 @@ function guideHtml() {
     : `Every ${days[Number(wd.weekday == null ? 5 : wd.weekday)] || "Friday"} at ${esc(fmtClock(wd.time || "10:00"))} it reads your recruiting email and writes you a short summary.`;
   const dl = (rows) => `<dl>${rows.map(([t, d]) => `<dt>${t}</dt><dd>${d}</dd>`).join("")}</dl>`;
   const empty = !S.room.positions.length;
-  return `<div class="guide">
+  const html = `<div class="guide">
     <div><h2>${first ? `Hi ${esc(first)}. ` : ""}Here is how your job search works.</h2>
       <p>Your computer looks for new jobs for you, scores each one against what you told it you want, writes a resume tailored to the good ones, and keeps everything on this page. It never applies anywhere or contacts anyone unless you press a button that says so.</p></div>
     ${empty ? `<div><h3>Your first day</h3><ol>
@@ -1161,6 +1179,7 @@ function guideHtml() {
     ])}</div>
     <div><h3>Need help?</h3><p>Open <b>Job Search Assistant</b> on your Desktop and ask in plain words, for example "Change the search times to 9am and 5pm", "I care less about pay and more about remote work", or "Something looks broken on my dashboard, can you check?"</p></div>
   </div>`;
+  return EXTRA && EXTRA.guide ? EXTRA.guide(html, { first, times, autoOn, minAuto, empty }) : html;
 }
 
 /* ── dialogs ─────────────────────────────────────────────────────────── */

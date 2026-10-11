@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Back to your job search</title>
+<style>
+  :root { color-scheme: light dark; --bg: #f4f5fa; --card: #fff; --ink: #2f2b3d; --muted: rgba(47,43,61,.7); }
+  @media (prefers-color-scheme: dark) { :root { --bg: #28243d; --card: #312d4b; --ink: #e7e3fc; --muted: rgba(231,227,252,.7); } }
+  body { margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--bg); color: var(--ink);
+         font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 16px; box-sizing: border-box; }
+  main { background: var(--card); border-radius: 10px; padding: 24px; max-width: 440px; box-shadow: 0 2px 6px rgba(0,0,0,.12); }
+  h1 { font-size: 1.2rem; margin: 0 0 8px; }
+  p { margin: 0; color: var(--muted); }
+</style>
+</head>
+<body>
+<main>
+  <h1 id="t">Taking you back to your job search…</h1>
+  <p id="d">One moment.</p>
+</main>
+<script>
+/* The Google sign-in for a home job-search page comes back here, because
+   Google only returns to public web addresses, and then this page sends the
+   browser straight on to the page on the home network that asked for it.
+   It keeps nothing and loads nothing. It only forwards to a home-network
+   address (a .local name, a private IP, localhost, or a one-word name) and
+   only to the job search's own callback path, so it cannot be used to send
+   anyone anywhere else. Source: web/oauth-bounce/ in the job-search template. */
+(function () {
+  var q = new URLSearchParams(location.search);
+  var target = null;
+  try {
+    var s = (q.get("state") || "").replace(/-/g, "+").replace(/_/g, "/");
+    while (s.length % 4) s += "=";
+    target = new URL(JSON.parse(atob(s)).r);
+  } catch (e) { target = null; }
+  function home(host) {
+    host = host.toLowerCase().replace(/\.$/, "");
+    if (host === "localhost" || /\.local$/.test(host)) return true;
+    if (host.indexOf(".") === -1 && host.indexOf(":") === -1) return true;
+    var m = /^(\d+)\.(\d+)\.(\d+)\.(\d+)$/.exec(host);
+    if (!m) return false;
+    var a = +m[1], b = +m[2];
+    return a === 10 || a === 127 || (a === 192 && b === 168) || (a === 172 && b >= 16 && b <= 31) || (a === 100 && b >= 64 && b <= 127);
+  }
+  if (target && /^https?:$/.test(target.protocol) && home(target.hostname) && target.pathname === "/oauth/google/callback") {
+    location.replace(target.origin + target.pathname + location.search);
+    return;
+  }
+  document.getElementById("t").textContent = "This link did not come from a job search page";
+  document.getElementById("d").textContent = "Go back to your job search page and press Connect Gmail again.";
+})();
+</script>
+</body>
+</html>

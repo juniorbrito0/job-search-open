@@ -49,6 +49,13 @@ trap 'rmdir "$LOCK" 2>/dev/null' EXIT
 
 cd "$PROJECT" || { log "FATAL: project dir missing"; exit 1; }
 
+# Never search for someone whose setup interview is not finished: the scores
+# would be judged against a blank profile.
+if ! /usr/bin/python3 -c 'import json,sys; sys.exit(0 if json.load(open("profile/candidate.json")).get("onboarded") is True else 1)' 2>/dev/null; then
+  log "setup interview not finished yet (profile/candidate.json onboarded is not true), skipping"
+  exit 0
+fi
+
 PY_BIN="$PROJECT/.venv/bin/python"
 [ -x "$PY_BIN" ] || PY_BIN="python3"
 stamp_now() {

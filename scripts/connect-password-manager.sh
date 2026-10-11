@@ -30,11 +30,14 @@ end run
 OSA
 }
 
+# A second copy of the job search on this Mac keeps its own entries (scripts/instance.py).
+KC_SERVICE="$(/usr/bin/python3 "$SCRIPT_DIR/instance.py" keychain-service 2>/dev/null || echo job-search)"
+
 store_secret() {  # $1 = account name, value on stdin
   local value; value="$(cat)"
   [[ -n "$value" ]] || { echo "Nothing was entered, so nothing was saved."; exit 1; }
   local esc="${value//\\/\\\\}"; esc="${esc//\"/\\\"}"
-  printf 'add-generic-password -U -s "job-search" -a "%s" -w "%s"\n' "$1" "$esc" | /usr/bin/security -i >/dev/null \
+  printf 'add-generic-password -U -s "%s" -a "%s" -w "%s"\n' "$KC_SERVICE" "$1" "$esc" | /usr/bin/security -i >/dev/null \
     || { echo "Could not save to the Keychain."; exit 1; }
 }
 

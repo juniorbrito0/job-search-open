@@ -36,6 +36,18 @@ PROJECT="$(cd "$SCRIPT_DIR/.." && pwd)"
 DEFAULT_ORDER="claude grok cursor"
 ORDER="${JOBSEARCH_AGENT_ORDER:-$DEFAULT_ORDER}"
 
+# A second copy of the job search on this Mac (an instance_id in
+# profile/candidate.json, see scripts/instance.py) runs Claude fenced in: none
+# of the Mac owner's settings, memory or claude.ai connectors, only this copy's
+# own job browser. Grok and Cursor have no such fence, so they are not used.
+ISOLATION_ARGS=()
+if /usr/bin/python3 "$SCRIPT_DIR/instance.py" isolated 2>/dev/null; then
+  ORDER="claude"
+  while IFS= read -r -d '' arg; do ISOLATION_ARGS+=("$arg"); done \
+    < <(/usr/bin/python3 "$SCRIPT_DIR/instance.py" claude-args)
+  export ENABLE_CLAUDEAI_MCP_SERVERS=false
+fi
+
 LABEL="agent"
 LOG=""
 TIMEOUT_SECONDS=3600
@@ -118,6 +130,7 @@ launch_provider() {
         "$bin" -p "$PROMPT" \
         --dangerously-skip-permissions \
         --add-dir "$PROJECT" \
+        ${ISOLATION_ARGS[@]+"${ISOLATION_ARGS[@]}"} \
         </dev/null >>"$out" 2>&1 &
       PID=$!
       ;;

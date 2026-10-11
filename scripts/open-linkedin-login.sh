@@ -32,7 +32,7 @@ if [ ! -x "$PY" ]; then
   exit 1
 fi
 
-PROFILE="${HOME}/.job-search/playwright-profile"
+PROFILE="$(/usr/bin/python3 "$PROJECT/scripts/instance.py" browser-profile 2>/dev/null || echo "${HOME}/.job-search/playwright-profile")"
 
 mkdir -p "$PROFILE"
 

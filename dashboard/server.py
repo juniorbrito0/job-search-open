@@ -14,7 +14,9 @@ so a dashboard click is not blocked by the twice-daily slot guard.
 By default it listens on this Mac only (127.0.0.1). Set
 candidate.json -> dashboard.share_on_home_wifi to true to open it to other
 devices on the home network. Host-header checks still reject public-internet
-names (DNS rebinding). There is no login.
+names (DNS rebinding). There is no login, unless web mode is on:
+candidate.json -> dashboard.web_login adds a password, the onboarding chat,
+Connect Gmail and the My answers tab (dashboard/webmode.py, docs/WEB-MODE.md).
 
 Port: candidate.json -> dashboard.port (default 7411). JOBSEARCH_PORT in the
 environment overrides it, which is handy for testing.
@@ -525,6 +527,11 @@ def _start_job(name: str) -> tuple[int, dict]:
     return 202, {"ok": True, "job": name, **_job_status(name)}
 
 
+import webmode  # noqa: E402  (needs _start_job, so it is wired up here)
+
+WEB = webmode.Web(lambda name: _start_job(name), PORT)
+
+
 def _read(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
@@ -797,6 +804,8 @@ class Handler(BaseHTTPRequestHandler):
         if not path.startswith("/apply-file/") and not self._request_allowed():
             self._send_json(403, {"error": "forbidden"})
             return
+        if not path.startswith("/apply-file/") and WEB.handle(self, "GET"):
+            return
         if path in STATIC_FILES:
             name, ctype = STATIC_FILES[path]
             self._send(200, (DASHBOARD_DIR / name).read_bytes(), ctype)
@@ -887,6 +896,8 @@ class Handler(BaseHTTPRequestHandler):
     def do_POST(self):
         if not self._request_allowed():
             self._send_json(403, {"error": "forbidden"})
+            return
+        if WEB.handle(self, "POST"):
             return
         path = self.path.split("?")[0]
         job_match = re.fullmatch(r"/api/jobs/(scan|apply|inbox)", path)

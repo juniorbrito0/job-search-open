@@ -38,6 +38,8 @@ dashboard/data/.last-inbox-at
 profile/candidate.json
 profile/resume.json
 profile/onboarding-progress.json
+profile/chat/
+profile/uploads/
 dashboard/data/*.json
 dashboard/data/insights.md
 docs/WORKLOG.md
