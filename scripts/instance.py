@@ -56,7 +56,10 @@ def instance_id() -> str:
 
 
 def isolated() -> bool:
-    return bool(instance_id()) or _candidate().get("isolate_agent") is True
+    # A web-mode copy (a login password on file) is always isolated, whatever
+    # candidate.json says: that file is one its own chat can edit.
+    return (bool(instance_id()) or _candidate().get("isolate_agent") is True
+            or (ROOT / ".secrets" / "web-login.json").is_file())
 
 
 def label(job: str) -> str:

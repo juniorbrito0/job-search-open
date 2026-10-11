@@ -78,7 +78,10 @@ CHAT_TOOLS = [
 ]
 # `scripts/../profile/x.py` would otherwise pass the scripts/ rule and run a file
 # the chat itself can write. No legitimate chat command needs "..".
-CHAT_DENY = ["Bash(*..*)"]
+# .secrets/ holds the Gmail key, the Google app secret and the login hash: the
+# chat can fetch web pages, so it must never be able to read them.
+CHAT_DENY = ["Bash(*..*)", "Read(./.secrets/**)", "Edit(./.secrets/**)",
+             "Glob(./.secrets/**)", "Grep(./.secrets/**)"]
 
 
 def _now() -> str:
@@ -120,7 +123,9 @@ def candidate() -> dict:
 
 
 def enabled() -> bool:
-    return (candidate().get("dashboard") or {}).get("web_login") is True
+    # A password on file keeps the login on even if candidate.json is edited
+    # (the chat can write that file; it cannot touch .secrets/).
+    return password_set() or (candidate().get("dashboard") or {}).get("web_login") is True
 
 
 def onboarded() -> bool:
