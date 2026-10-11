@@ -299,7 +299,7 @@
       closeAssistant();
       openAssistant();
     } else if (act === "logout") {
-      await fetch("/api/logout", { method: "POST" });
+      await fetch("/api/logout", { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" });
       location.href = "/login";
     } else if (act === "remove") {
       el.closest(".ans-item").remove();
@@ -313,7 +313,7 @@
       markDirty();
     } else if (act === "gmail-off") {
       if (!confirm(T("Disconnect Gmail? The search will stop reading job alert emails and replies."))) return;
-      await fetch("/api/gmail/disconnect", { method: "POST" });
+      await fetch("/api/gmail/disconnect", { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" });
       loadAnswers(document.getElementById("content"));
     }
   });

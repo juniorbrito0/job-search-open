@@ -135,17 +135,21 @@ def exchange_code(code: str) -> str:
         raise GmailError("Google did not grant read access to Gmail (the box was left unticked)")
     if not got.get("refresh_token"):
         raise GmailError("Google sent no long-term key; remove the app at myaccount.google.com/permissions and connect again")
-    record = {
+    # Ask who this is before saving anything, so a failure leaves no half connection.
+    req = urllib.request.Request(f"{API}/profile", headers={"Authorization": f"Bearer {got.get('access_token')}"})
+    try:
+        with urllib.request.urlopen(req, timeout=TIMEOUT) as res:
+            email = json.loads(res.read() or b"{}").get("emailAddress", "")
+    except (urllib.error.URLError, TimeoutError, ValueError) as exc:
+        raise GmailError(f"Google gave access but Gmail did not answer ({exc}); try again")
+    _write_secret(TOKEN_FILE, {
         "refresh_token": got["refresh_token"],
         "access_token": got.get("access_token"),
         "expires_at": time.time() + int(got.get("expires_in") or 0) - 60,
         "scope": got.get("scope"),
         "connected_at": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
-    }
-    _write_secret(TOKEN_FILE, record)
-    email = profile().get("emailAddress", "")
-    record["email"] = email
-    _write_secret(TOKEN_FILE, record)
+        "email": email,
+    })
     return email
 
 

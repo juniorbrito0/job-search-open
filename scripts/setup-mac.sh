@@ -256,6 +256,13 @@ text = pathlib.Path(src).read_text()
 text = (text.replace("__PROJECT_ROOT__", escape(project)).replace("__HOME__", escape(home))
             .replace("__USER__", escape(user)).replace("__CALENDAR__", cal)
             .replace(f"<string>{plain}</string>", f"<string>{escape(label)}</string>"))
+# A second copy pins its id in the job's own environment, so nothing written
+# into candidate.json later (the web chat can edit that file) can change which
+# copy this job belongs to or switch its isolation off.
+iid = label.split(".")[2] if label.count(".") == 3 else ""
+if iid:
+    text = text.replace("<key>EnvironmentVariables</key>\n  <dict>",
+                        f"<key>EnvironmentVariables</key>\n  <dict>\n    <key>JOBSEARCH_INSTANCE</key>\n    <string>{escape(iid)}</string>", 1)
 pathlib.Path(dest).write_text(text)
 PY
 }

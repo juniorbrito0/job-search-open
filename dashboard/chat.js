@@ -211,7 +211,7 @@
         else if (v === "open-panel") location.href = "/";
         else if (v === "search-now") {
           el.disabled = true;
-          await fetch("/api/jobs/scan", { method: "POST" });
+          await fetch("/api/jobs/scan", { method: "POST", headers: { "Content-Type": "application/json" } });
           send("I pressed Search now.");
         }
         if (opts.onAction) opts.onAction(v);

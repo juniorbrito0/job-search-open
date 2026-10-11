@@ -92,7 +92,7 @@ function startChat(lang) {
     },
   });
   document.getElementById("logout").addEventListener("click", async () => {
-    await fetch("/api/logout", { method: "POST" });
+    await fetch("/api/logout", { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" });
     location.href = "/login";
   });
   document.getElementById("restart").addEventListener("click", async () => {

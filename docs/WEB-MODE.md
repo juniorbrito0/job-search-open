@@ -24,8 +24,14 @@ The chat and the scheduled jobs run on the Mac owner's Claude subscription.
 
 ## Setup (admin, once)
 
-1. **Clone** the template outside `~/Documents` (background jobs cannot run
-   there), e.g. `git clone https://github.com/juniorbrito0/job-search-open ~/gui-job-search`.
+1. **Clone** the template **outside your home folder**, e.g.
+   `git clone https://github.com/juniorbrito0/job-search-open /Users/Shared/gui-job-search`
+   then `chmod 700` it. Not `~/something`: Claude Code reads every `CLAUDE.md`
+   in the folders above the project, and `~/.claude/CLAUDE.md` (the Mac
+   owner's own instructions) is one of them when the project sits in the home
+   folder. Verified 2026-10-11: from `~/gui-job-search` the chat could quote the
+   owner's global instructions; from `/Users/Shared/gui-job-search` it could not.
+   (Also not in `~/Documents`, where background jobs freeze.)
 2. **Tools:** `bash scripts/setup-mac.sh --tools`, then
    `.venv/bin/python scripts/init_data.py`.
 3. **Settings** in `profile/candidate.json`:

@@ -73,15 +73,19 @@ CHAT_TOOLS = [
     "Edit(./Applications/**)", "Edit(./Resume/**)", "Edit(./docs/WORKLOG.md)",
     "Bash(.venv/bin/python generate_resume.py*)",
     "Bash(.venv/bin/python scripts/*)",
-    "Bash(textutil *)", "Bash(soffice --headless *)",
+    # Exact shapes only: a free-form textutil or soffice could write a file
+    # anywhere, including a script the next rule would then run.
+    "Bash(textutil -convert txt -stdout *)",
+    "Bash(soffice --headless --convert-to pdf --outdir Resume *)",
+    "Bash(soffice --headless --convert-to pdf --outdir Applications/*)",
     "Bash(ls)", "Bash(ls *)",
 ]
 # `scripts/../profile/x.py` would otherwise pass the scripts/ rule and run a file
 # the chat itself can write. No legitimate chat command needs "..".
 # .secrets/ holds the Gmail key, the Google app secret and the login hash: the
 # chat can fetch web pages, so it must never be able to read them.
-CHAT_DENY = ["Bash(*..*)", "Read(./.secrets/**)", "Edit(./.secrets/**)",
-             "Glob(./.secrets/**)", "Grep(./.secrets/**)"]
+CHAT_DENY = ["Bash(*..*)", "Bash(*.secrets*)", "Bash(*-output*)",
+             "Read(./.secrets/**)", "Edit(./.secrets/**)"]
 
 
 def _now() -> str:
@@ -395,7 +399,9 @@ class Chat:
         claude = next((c for c in (Path.home() / ".local/bin/claude", Path.home() / ".claude/local/claude",
                                    Path("/opt/homebrew/bin/claude"), Path("/usr/local/bin/claude"))
                        if c.is_file()), Path("claude"))
-        cmd = [str(claude), "-p", text, "--output-format", "stream-json", "--verbose",
+        # The message goes in on stdin, never as an argument: a message that
+        # starts with "-" (a pasted bullet list) would be read as an option.
+        cmd = [str(claude), "-p", "--output-format", "stream-json", "--verbose",
                "--include-partial-messages", "--append-system-prompt", self._rules(mode),
                "--permission-mode", "dontAsk", "--allowedTools", ",".join(CHAT_TOOLS),
                "--disallowedTools", ",".join(CHAT_DENY)]
@@ -416,8 +422,10 @@ class Chat:
         result_text = None
         try:
             proc = subprocess.Popen(self._cmd(mode, text, session_id), cwd=str(PROJECT_DIR), env=env,
-                                    stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
+                                    stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                                     stderr=open(LOG_DIR / "web-chat.err.log", "a"), text=True, bufsize=1)
+            proc.stdin.write(text)
+            proc.stdin.close()
         except OSError as exc:
             self._finish(mode, None, "", f"could not start Claude ({exc})")
             return
@@ -428,6 +436,8 @@ class Chat:
                 try:
                     ev = json.loads(line)
                 except ValueError:
+                    continue
+                if not isinstance(ev, dict):
                     continue
                 kind = ev.get("type")
                 if kind == "system" and ev.get("subtype") == "init":
@@ -452,6 +462,12 @@ class Chat:
                     if ev.get("is_error"):
                         error = str(result_text or "Claude stopped with an error")[:300]
             proc.wait()
+        except Exception as exc:  # whatever happens, the chat must not stay "busy" for ever
+            error = f"the assistant's answer could not be read ({exc})"
+            try:
+                proc.kill()
+            except OSError:
+                pass
         finally:
             killer.cancel()
         if current.strip():
@@ -535,7 +551,9 @@ def answers() -> dict:
         "pay_floor": comp.get("floor", 0),
         "pay_goal": comp.get("bonus", 0),
         "currency": c.get("currency", "CAD"),
-        "off_limits": _list_of_str((c.get("industries") or {}).get("off_limits")),
+        "off_limits": _list_of_str(list(dict.fromkeys(
+            _list_of_str((c.get("industries") or {}).get("off_limits"))
+            + _list_of_str((s.get("hard_exclusions") or {}).get("industries"))))),
         "search_times": _list_of_str((c.get("schedule") or {}).get("search_times"), 4, 5),
         "sources": {k: bool((c.get("sources") or {}).get(k, False)) for k in SOURCE_KEYS},
         "summary": str(s.get("plain_summary") or c.get("goal_summary") or ""),
@@ -559,7 +577,7 @@ def save_answers(body: dict) -> tuple[int, dict]:
         m = re.fullmatch(r"(\d{1,2}):(\d{2})", str(t).strip())
         if m and int(m.group(1)) < 24 and int(m.group(2)) < 60:
             times.append(f"{int(m.group(1)):02d}:{m.group(2)}")
-    times = sorted(set(times))[:4]
+    times = sorted(set(times))[:3]
 
     def num(v, lo=0, hi=10_000_000):
         try:
@@ -676,8 +694,11 @@ class Web:
 
     @staticmethod
     def _body(h, limit: int = 1_000_000):
-        length = int(h.headers.get("Content-Length") or 0)
-        if length > limit:
+        try:
+            length = int(h.headers.get("Content-Length") or 0)
+        except ValueError:
+            return None
+        if length < 0 or length > limit:
             return None
         raw = h.rfile.read(length) if length else b""
         try:
@@ -714,6 +735,17 @@ class Web:
         parsed = urlparse(h.path)
         path = parsed.path
         qs = parse_qs(parsed.query)
+        # Belt and braces on top of server.py's Origin check: a browser marks a
+        # request another site started as cross-site, and that is never us.
+        # This also covers a browser on this Mac, which skips the login.
+        if method == "POST" and (h.headers.get("Sec-Fetch-Site") or "").lower() == "cross-site":
+            h._send_json(403, {"error": "forbidden"})
+            return True
+        if (method == "POST" and path != "/api/upload"
+                and "application/json" not in (h.headers.get("Content-Type") or "").lower()):
+            # A plain HTML form cannot send JSON, so this rules out form-based forgery.
+            h._send_json(415, {"error": "JSON only"})
+            return True
 
         if path == "/login" and method == "GET":
             h._send(200, _page("login.html"), "text/html; charset=utf-8")
@@ -878,7 +910,10 @@ class Web:
     def _upload(self, h, qs) -> None:
         name = os.path.basename(unquote((qs.get("name") or ["resume"])[0]))[:120]
         ext = os.path.splitext(name)[1].lower()
-        length = int(h.headers.get("Content-Length") or 0)
+        try:
+            length = int(h.headers.get("Content-Length") or 0)
+        except ValueError:
+            length = -1
         if ext not in UPLOAD_TYPES:
             h._send_json(400, {"error": "type", "allowed": sorted(UPLOAD_TYPES)})
             return

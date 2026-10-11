@@ -38,7 +38,7 @@
   } catch (e) { target = null; }
   function home(host) {
     host = host.toLowerCase().replace(/\.$/, "");
-    if (host === "localhost" || /\.local$/.test(host)) return true;
+    if (host === "localhost" || /\.local$/.test(host) || /\.ts\.net$/.test(host)) return true;
     if (host.indexOf(".") === -1 && host.indexOf(":") === -1) return true;
     var m = /^(\d+)\.(\d+)\.(\d+)\.(\d+)$/.exec(host);
     if (!m) return false;
