@@ -25,7 +25,7 @@
    Google only returns to public web addresses, and then this page sends the
    browser straight on to the page on the home network that asked for it.
    It keeps nothing and loads nothing. It only forwards to a home-network
-   address (a .local name, a private IP, localhost, or a one-word name) and
+   address (a .local or Tailscale name, a private IP, or localhost) and
    only to the job search's own callback path, so it cannot be used to send
    anyone anywhere else. Source: web/oauth-bounce/ in the job-search template. */
 (function () {
@@ -39,7 +39,6 @@
   function home(host) {
     host = host.toLowerCase().replace(/\.$/, "");
     if (host === "localhost" || /\.local$/.test(host) || /\.ts\.net$/.test(host)) return true;
-    if (host.indexOf(".") === -1 && host.indexOf(":") === -1) return true;
     var m = /^(\d+)\.(\d+)\.(\d+)\.(\d+)$/.exec(host);
     if (!m) return false;
     var a = +m[1], b = +m[2];

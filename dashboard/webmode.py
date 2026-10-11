@@ -84,7 +84,8 @@ CHAT_TOOLS = [
 # the chat itself can write. No legitimate chat command needs "..".
 # .secrets/ holds the Gmail key, the Google app secret and the login hash: the
 # chat can fetch web pages, so it must never be able to read them.
-CHAT_DENY = ["Bash(*..*)", "Bash(*.secrets*)", "Bash(*-output*)",
+CHAT_DENY = ["Bash(*..*)", "Bash(*.secrets*)", "Bash(*-output*)", "Bash(*--outdir*--outdir*)",
+             "Bash(*>*)", "Bash(*|*)", "Bash(*`*)", "Bash(*$(*)",
              "Read(./.secrets/**)", "Edit(./.secrets/**)"]
 
 
